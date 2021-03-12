@@ -18,35 +18,43 @@ public class StringByEntryInserter {
 	}
 
 	/**
-	 * Adds the substring newSubstr to the input string after the entry-th
-	 * occurrence of the substring oldSubstr.
+	 * Returns the string with the inserted substring after the entry-th occurrence
+	 * of the desired substring
 	 * 
 	 * @param input        - input string
 	 * @param entry        - required number of entrys
 	 * @param oldSubstring - desired substring
 	 * @param newSubstring - substring to add
-	 * @return Returns the modified string
-	 * @throws IncorrectInputStringException
+	 * @throws IncorrectInputStringException if input string is empty
 	 */
-	public static String insertNewSubstringToInputString(String input, int entry, String oldSubstring,
+	public static String getStringWithNewSubstringByEntries(String input, int entry, String oldSubstring,
 			String newSubstring) throws IncorrectInputStringException {
-		String output;
 		if (input.isEmpty()) {
 			throw new IncorrectInputStringException(InputStringExceptionCode.EMPTY);
-		} else {
-			// Find the position of the entry-th occurrence of the substring
-			int currentPosition = getIndexOfEntryOccurence(input, oldSubstring, entry);
-			currentPosition += oldSubstring.length() - 1; // Calculating the position from which to insert a new
-															// substring
-			// Forming a new line
-			// Copy the old string to the last occurrence of the substring
-			// (including the last occurrence)
-			output = input.substring(0, currentPosition);
-			output += newSubstring; // Adding the inserted substring
-			if (currentPosition != input.length() - 1) {
-				// If entry-th entry is not the end of the input line
-				output += input.substring(currentPosition, input.length()); // Adding the end of the input line
-			}
+		}
+		// Find the position of the entry-th occurrence of the substring
+		int positionLastEntry = getIndexOfEntryOccurence(input, oldSubstring, entry);
+		return insertNewSubstringToString(positionLastEntry + oldSubstring.length() - 1, input, newSubstring);
+	}
+
+	/**
+	 * Inserts a substring into a string at a specific position
+	 * 
+	 * @param insertingPosition - position at which to insert the substring
+	 * @param input             - string to insert a substring
+	 * @param newSubstring      - inserted substring
+	 * @return Modified string
+	 */
+	private static String insertNewSubstringToString(int insertingPosition, String input, String newSubstring) {
+		String output;
+		// Forming a new line
+		// Copy the old string to the last occurrence of the substring
+		// (including the last occurrence)
+		output = input.substring(0, insertingPosition);
+		output += newSubstring; // Adding the inserted substring
+		if (insertingPosition != input.length() - 1) {
+			// If entry-th entry is not the end of the input line
+			output += input.substring(insertingPosition, input.length()); // Adding the end of the input line
 		}
 		return output;
 	}
@@ -57,9 +65,10 @@ public class StringByEntryInserter {
 	 * @param input         - input string
 	 * @param substring     - substring for search
 	 * @param entryQuantity - required quantity of entrys substr in inputString
-	 * @return Returns the index from which the entri-th occurrence of the substring
+	 * @return Returns the index from which the entry-th occurrence of the substring
 	 *         in the string begins.
-	 * @throws IncorrectInputStringException
+	 * @throws IncorrectInputStringException if input string does not contain the
+	 *                                       required number of occurrences
 	 */
 	private static int getIndexOfEntryOccurence(String input, String substring, int entryQuantity)
 			throws IncorrectInputStringException {
