@@ -46,8 +46,8 @@ public class ApplicationRunner {
 			stringArray[i] = stringArray[i].trim();
 
 			try {
-				output = StringByEntryInserter.getStringWithNewSubstringByEntries(stringArray[i], entryQuantity, searching,
-						inserting);
+				output = StringByEntryInserter.getStringWithNewSubstringByEntries(stringArray[i], entryQuantity,
+						searching, inserting);
 			} catch (IncorrectInputStringException e) {
 				output = e.toString();
 			} finally {
