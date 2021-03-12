@@ -65,7 +65,7 @@ public class ArrayAdjacentElementsInPairSwaper {
 											// the first one
 		int len = this.arrayContainer.length;
 		for (int i = 0; i < len - 1; i += 2) {
-			if (isFirstLessThanSecond(i, i + 1)) {
+			if (this.isFirstLessThanSecond(i, i + 1)) {
 				quantityLeftLessThanRight++;
 			}
 		}
