@@ -34,25 +34,15 @@ public class ArrayAdjacentElementsInPairSwaper {
 	/**
 	 * Swap adjacent elements in pairs of arrayContainer (1st and 2nd, 3rd and 4th,
 	 * etc.)
-	 * 
-	 * @return Quantity of pairs (before changes), where left element less than
-	 *         right.
 	 */
-	public int swapAdjacentElemetnsInPair() {
-		int quantityLeftLessThanRight = 0; // quantity for counting initial pairs in which the left element is less than
-											// the first one
+	public void swapAdjacentElemetnsInPair() {
 		int buffer; // buffer var for swap
 		int len = this.arrayContainer.length;
 		for (int i = 0; i < len - 1; i += 2) {
-			if (isFirstLessThanSecond(i, i + 1)) {
-				quantityLeftLessThanRight++;
-			}
 			buffer = this.arrayContainer[i];
 			this.arrayContainer[i] = this.arrayContainer[i + 1];
 			this.arrayContainer[i + 1] = buffer;
-
 		}
-		return quantityLeftLessThanRight;
 	}
 
 	/**
@@ -65,6 +55,21 @@ public class ArrayAdjacentElementsInPairSwaper {
 	 */
 	private boolean isFirstLessThanSecond(int firstIndex, int secondIndex) {
 		return this.arrayContainer[firstIndex] < this.arrayContainer[secondIndex];
+	}
+
+	/**
+	 * @return Quantity of pairs, where left element less than right.
+	 */
+	public int countPairsWithLeftLessThanRight() {
+		int quantityLeftLessThanRight = 0; // quantity for counting initial pairs in which the left element is less than
+											// the first one
+		int len = this.arrayContainer.length;
+		for (int i = 0; i < len - 1; i += 2) {
+			if (isFirstLessThanSecond(i, i + 1)) {
+				quantityLeftLessThanRight++;
+			}
+		}
+		return quantityLeftLessThanRight;
 	}
 
 	/**
