@@ -6,6 +6,6 @@ package ru.rsreu.astashkin0204;
  * @author Maxim Astashkin
  *
  */
-enum InputStringExcCode {
+enum InputStringExceptionCode {
 	EMPTY, NOT_ENOUGH_ENTRY
 }

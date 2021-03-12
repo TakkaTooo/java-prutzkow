@@ -16,7 +16,7 @@ class IncorrectInputStringException extends Exception {
 	 * Error code field, allows you to determine what exactly the line is incorrect
 	 */
 	@NotNull
-	private final InputStringExcCode excCode;
+	private final InputStringExceptionCode excCode;
 	/**
 	 * The string representation of the error
 	 */
@@ -28,9 +28,9 @@ class IncorrectInputStringException extends Exception {
 	 * 
 	 * @param exC - error code
 	 */
-	IncorrectInputStringException(InputStringExcCode exC) {
+	IncorrectInputStringException(InputStringExceptionCode exC) {
 		this.excCode = exC;
-		if (this.excCode == InputStringExcCode.EMPTY) {
+		if (this.excCode == InputStringExceptionCode.EMPTY) {
 			this.message = "Exception. Input string is empty";
 		} else /* this.excCode == InputStringExcCode.NOT_ENOUGH_ENTRY */ {
 			this.message = "Exception. Input string does not contain the required number of occurrences.";
