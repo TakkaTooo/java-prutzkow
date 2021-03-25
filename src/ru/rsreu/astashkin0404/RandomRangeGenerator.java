@@ -2,13 +2,13 @@ package ru.rsreu.astashkin0404;
 
 import com.prutzkow.resourcer.Resourcer;
 
-public class RandomRange {
+public class RandomRangeGenerator {
 
 	/**
 	 * Default private constructor - so that you cannot create instances of the
 	 * utility class.
 	 */
-	private RandomRange() {
+	private RandomRangeGenerator() {
 
 	}
 

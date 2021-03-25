@@ -27,7 +27,7 @@ public class RowsMaxLengthSameElementsSequenceArray extends TwoDimArray {
 	public void fill(int min, int max) throws IllegalArgumentException {
 		for (int i = 0; i < this.getRowCount(); i++) {
 			for (int j = 0; j < this.arrayBody[i].length; j++) {
-				this.arrayBody[i][j] = RandomRange.getRandomByRange(min, max);
+				this.arrayBody[i][j] = RandomRangeGenerator.getRandomByRange(min, max);
 			}
 		}
 	}
@@ -38,8 +38,9 @@ public class RowsMaxLengthSameElementsSequenceArray extends TwoDimArray {
 	 */
 	public int[] getMaxLengthSameElementsSequenceRows() {
 		int[] sequenceLenghts = getLengthsSameElementsSequenceByRows();
-		return ArrayUtils.listToArray(
-				ArrayUtils.getIndexesByValue(sequenceLenghts, ArrayUtils.getArrayMaxValue(sequenceLenghts)));
+		int maxLengthSequence = getArrayMaxValue(sequenceLenghts);
+		return IndecesWithQuantityArrayElementsEqaulsValueUtiliter.getIndecesElementsEqualsValue(sequenceLenghts,
+				maxLengthSequence);
 	}
 
 	/**
@@ -75,20 +76,34 @@ public class RowsMaxLengthSameElementsSequenceArray extends TwoDimArray {
 		}
 		return maxLength;
 	}
-	
+
 	/**
 	 * @return number number of elements in the first column
 	 */
-	private int countElementsFirstColumn() {
-		int quanityOfEmptyRows = 0;
+	private int countElementsInColumn(int column) {
+		int quantity = 0;
 		for (int i = 0; i < this.getRowCount(); i++) {
-			if (this.arrayBody[i].length != 0) {
-				quanityOfEmptyRows++;
+			if (this.arrayBody[i].length >= column) {
+				quantity++;
 			}
 		}
-		return quanityOfEmptyRows;
+		return quantity;
 	}
-	
+
+	/**
+	 * @param values - input array.
+	 * @return max value in values array.
+	 */
+	private static int getArrayMaxValue(int[] values) {
+		int maxValue = values[0];
+		for (int item : values) {
+			if (item > maxValue) {
+				maxValue = item;
+			}
+		}
+		return maxValue;
+	}
+
 	/**
 	 * Adds information about the number of elements in the first column to the
 	 * string representation of an array.
@@ -98,7 +113,7 @@ public class RowsMaxLengthSameElementsSequenceArray extends TwoDimArray {
 	 */
 	@Override
 	public String toString() {
-		return String.format("%s%s %d\n",super.toString(), Resourcer.getString("message.rowCount"),
-				countElementsFirstColumn());
+		return String.format("%s%s %d\n", super.toString(), Resourcer.getString("message.rowCount"),
+				countElementsInColumn(2));
 	}
 }
