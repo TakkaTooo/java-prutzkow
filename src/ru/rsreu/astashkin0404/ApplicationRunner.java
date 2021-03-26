@@ -34,9 +34,10 @@ public class ApplicationRunner {
 	 * fill a two-dim array.
 	 */
 	private static final int MAX_NUMBER = 10;
-	
+
 	/**
 	 * Entry point.
+	 * 
 	 * @param args - Launch parameters.
 	 */
 	public static void main(String[] args) {
@@ -45,8 +46,7 @@ public class ApplicationRunner {
 		array.fill(MIN_NUMBER, MAX_NUMBER);
 		int[] rows = array.getMaxLengthSameElementsSequenceRows();
 
-		output.append(Resourcer.getString("message.sourceArray"))
-				.append("\n").append(array.toString());
+		output.append(Resourcer.getString("message.sourceArray")).append("\n").append(array.toString());
 		output.append(Resourcer.getString("message.infoAboutTask"));
 		for (int item : rows) {
 			output.append(item).append(" ");

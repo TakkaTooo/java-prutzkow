@@ -2,6 +2,11 @@ package ru.rsreu.astashkin0404;
 
 import com.prutzkow.resourcer.Resourcer;
 
+/**
+ * Utility class for generating random integers in a range
+ * 
+ * @author Maxim Astashkin
+ */
 public class RandomRangeGenerator {
 
 	/**

@@ -57,7 +57,6 @@ public class RowsMaxLengthSameElementsSequenceArray extends TwoDimArray {
 	}
 
 	/**
-	 * 
 	 * @param row - array to search for sequences.
 	 * @return The length of the longest sequence of elements with the same value in
 	 *         array (row of two-dim array).
@@ -78,12 +77,12 @@ public class RowsMaxLengthSameElementsSequenceArray extends TwoDimArray {
 	}
 
 	/**
-	 * @return number number of elements in the first column
+	 * @return number of elements in the column
 	 */
 	private int countElementsInColumn(int column) {
 		int quantity = 0;
 		for (int i = 0; i < this.getRowCount(); i++) {
-			if (this.arrayBody[i].length >= column) {
+			if (this.arrayBody[i].length > column) {
 				quantity++;
 			}
 		}
@@ -114,6 +113,6 @@ public class RowsMaxLengthSameElementsSequenceArray extends TwoDimArray {
 	@Override
 	public String toString() {
 		return String.format("%s%s %d\n", super.toString(), Resourcer.getString("message.rowCount"),
-				countElementsInColumn(2));
+				countElementsInColumn(0));
 	}
 }
