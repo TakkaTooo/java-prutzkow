@@ -1,6 +1,4 @@
-package ru.rsreu.astashkin0504.vegetables;
-
-import com.prutzkow.resourcer.Resourcer;
+package ru.rsreu.astashkin0504.vegetable;
 
 public class Cucumber extends Vegetable {
 
@@ -15,10 +13,5 @@ public class Cucumber extends Vegetable {
 	 */
 	public Cucumber(Freshness statement, int calorieContentPerHundredGrams, int weight) {
 		super(statement, calorieContentPerHundredGrams, weight);
-	}
-
-	@Override
-	public String toString() {
-		return String.format(Resourcer.getString("vegetables.Cucumber.stringMessage"), super.toString());
 	}
 }

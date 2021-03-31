@@ -1,4 +1,4 @@
-package ru.rsreu.astashkin0504.vegetables;
+package ru.rsreu.astashkin0504.vegetable;
 
 import com.prutzkow.resourcer.Resourcer;
 
@@ -6,6 +6,26 @@ import com.prutzkow.resourcer.Resourcer;
  * An abstract class describing the essence of a vegetable.
  */
 public abstract class Vegetable implements Comparable<Vegetable> {
+
+	/**
+	 * Implementation of NullObject pattern
+	 */
+	public static final Vegetable NULL_VEGETABLE = new Vegetable() {
+		@Override
+		public void worseCondition() {
+
+		}
+
+		@Override
+		public int getTotalCalories() {
+			return 0;
+		}
+
+		@Override
+		public String toString() {
+			return "";
+		}
+	};
 
 	/**
 	 * The maximum calorie content of a vegetable per 100 grams (in kcal).
@@ -65,6 +85,10 @@ public abstract class Vegetable implements Comparable<Vegetable> {
 		if (weight > 0 && weight <= MAX_WEIGHT) {
 			this.weight = weight;
 		}
+	}
+
+	private Vegetable() {
+
 	}
 
 	/**
@@ -131,7 +155,7 @@ public abstract class Vegetable implements Comparable<Vegetable> {
 	 */
 	@Override
 	public String toString() {
-		return String.format(Resourcer.getString("vegetables.Vegetable.stringMessage"), this.statement.toString(),
-				this.weight, this.getTotalCalories());
+		return String.format(Resourcer.getString("vegetables.Vegetable.stringMessageFormat"),
+				this.getClass().getSimpleName(), this.statement.toString(), this.weight, this.getTotalCalories());
 	}
 }

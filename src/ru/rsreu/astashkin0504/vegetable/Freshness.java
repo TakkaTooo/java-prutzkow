@@ -1,4 +1,4 @@
-package ru.rsreu.astashkin0504.vegetables;
+package ru.rsreu.astashkin0504.vegetable;
 
 import com.prutzkow.resourcer.Resourcer;
 

@@ -1,18 +1,17 @@
 package ru.rsreu.astashkin0504;
-import ru.rsreu.astashkin0504.vegetables.*;
+import ru.rsreu.astashkin0504.vegetable.*;
 
-public class SaladInitializer {
+public class VegetablesInitializer {
 
-	private static final boolean TOMATO_COOKED_STATE = true;
 	private static final Vegetable CARROT = new Carrot(Freshness.FRESH_STATEMENT, 25, 150);
 	private static final Vegetable CUCUMBER = new Cucumber(Freshness.MEDIUM_STATEMENT, 15, 80);
-	private static final Vegetable TOMATO = new Tomato(Freshness.FRESH_STATEMENT, 20, 100, TOMATO_COOKED_STATE);
+	private static final Vegetable TOMATO = new Tomato(Freshness.FRESH_STATEMENT, 20, 100, !Tomato.DEFAULT_COOKED_STATE);
 	
 	/**
 	 * Default private constructor - so that you cannot create instances of the
 	 * utility class.
 	 */
-	private SaladInitializer() {
+	private VegetablesInitializer() {
 		
 	}
 
@@ -20,12 +19,18 @@ public class SaladInitializer {
 	 * Creates an array of Vegetable instaces.
 	 * @return Vegetable[].
 	 */
-	public static Vegetable[] getSalad() {
+	public static Vegetable[] initializeVegetablesArray() {
 		return new Vegetable[] {
 			CARROT,
 			CUCUMBER,
 			TOMATO
 		};
 	}
-
+	
+	/**
+	 * @return Specific Tomato instance for next searching
+	 */
+	public static Vegetable getSearchingVegetableInstance() {
+		return TOMATO;
+	}
 }

@@ -2,7 +2,7 @@ package ru.rsreu.astashkin0504;
 
 import java.util.Arrays;
 
-import ru.rsreu.astashkin0504.vegetables.*;
+import ru.rsreu.astashkin0504.vegetable.*;
 
 public class ChefService {
 
@@ -14,42 +14,40 @@ public class ChefService {
 
 	}
 
-	public static Vegetable[] createSalad() {
-		return SaladInitializer.getSalad();
-	}
-
-	/**
-	 * Calculates the total calorie content of the salad, taking into account the
-	 * calorie content of all vegetables.
-	 * 
-	 * @param salad - Vegetable's array.
-	 * @return total calorie content of salad.
-	 */
-	public static int getSaladCalorieContent(Vegetable[] salad) {
-		int summ = 0;
-		for (Vegetable vegetable : salad) {
-			summ += vegetable.getTotalCalories();
-		}
-		return summ;
-	}
-
-	/**
-	 * @param salad - Vegetable's array.
-	 * @return a string representation of the salad.
-	 */
-	public static String getStringSaladRepresentation(Vegetable[] salad) {
-		StringBuilder output = new StringBuilder();
-		for (Vegetable vegetable : salad) {
-			output.append(vegetable.toString()).append("\n");
-		}
-		return output.toString();
-	}
-	
 	/**
 	 * Sorts an array of Vegetables.
+	 * 
 	 * @param salad - processed array.
 	 */
-	public static void sortSaladVegetables(Vegetable[] salad) {
-		Arrays.sort(salad);
+	public static void sortSaladVegetables(Salad salad) {
+		Arrays.sort(salad.getVegetables());
+	}
+
+	/**
+	 * Searching by binary search for a specific vegetable in a salad
+	 * 
+	 * @param salad              - search salad
+	 * @param searchingVegetable - the sought vegetable
+	 * @return vegetable found in salad or NULL_VEGETABLE
+	 */
+	public static Vegetable searchVegetable(Salad salad, Vegetable searchingVegetable) {
+		sortSaladVegetables(salad);
+		return searchVegetableOnSortedArray(salad.getVegetables(), searchingVegetable);
+	}
+
+	/**
+	 * Searching by binary search for a specific vegetable in a Vegetable array
+	 * 
+	 * @param vegetables         - search array of Vegatable
+	 * @param searchingVegetable - the sought vegetable
+	 * @return vegetable found in Vegetable array or NULL_VEGETABL
+	 */
+	private static Vegetable searchVegetableOnSortedArray(Vegetable[] vegetables, Vegetable searchingVegetable) {
+		int foundIndex = Arrays.binarySearch(vegetables, searchingVegetable);
+		if (foundIndex >= 0) {
+			return vegetables[foundIndex];
+		} else {
+			return Vegetable.NULL_VEGETABLE;
+		}
 	}
 }

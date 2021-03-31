@@ -1,4 +1,4 @@
-package ru.rsreu.astashkin0504.vegetables;
+package ru.rsreu.astashkin0504.vegetable;
 
 /**
  * Exception class to throw an error in case of an attempt to deteriorate

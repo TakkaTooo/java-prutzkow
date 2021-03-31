@@ -2,8 +2,6 @@ package ru.rsreu.astashkin0504;
 
 import com.prutzkow.resourcer.Resourcer;
 
-import ru.rsreu.astashkin0504.vegetables.Vegetable;
-
 public class ApplicationRunner {
 
 	/**
@@ -16,15 +14,15 @@ public class ApplicationRunner {
 
 	public static void main(String[] args) {
 		StringBuilder output = new StringBuilder();
-		Vegetable[] salad = ChefService.createSalad();
-		output.append(Resourcer.getString("outputMessage.createdSalad"))
-				.append(ChefService.getStringSaladRepresentation(salad))
+		Salad salad = new Salad(VegetablesInitializer.initializeVegetablesArray());
+		output.append(Resourcer.getString("outputMessage.createdSalad")).append(salad).append("\n")
 				.append(Resourcer.getString("outputMessage.totalCalorieContent"))
-				.append(ChefService.getSaladCalorieContent(salad)).append(" ")
-				.append(Resourcer.getString("outputMessage.kcal")).append("\n");
+				.append(salad.getTotalCaloriesContent()).append(Resourcer.getString("outputMessage.kcal"));
 		ChefService.sortSaladVegetables(salad);
-		output.append(Resourcer.getString("outputMessage.sorterSalad"))
-				.append(ChefService.getStringSaladRepresentation(salad));
+		output.append(Resourcer.getString("outputMessage.sorterSalad")).append(salad).append("\n")
+				.append(Resourcer.getString("outputMessage.searchingResult"))
+				.append(ChefService.searchVegetable(salad, VegetablesInitializer.getSearchingVegetableInstance()));
+
 		System.out.println(output);
 	}
 }

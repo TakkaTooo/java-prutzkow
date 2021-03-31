@@ -1,13 +1,11 @@
-package ru.rsreu.astashkin0504.vegetables;
-
-import com.prutzkow.resourcer.Resourcer;
+package ru.rsreu.astashkin0504.vegetable;
 
 public class Tomato extends Vegetable {
 
 	/**
 	 * Default value for isCooked.
 	 */
-	private static final boolean DEFAULT_COOKED_STATE = false;
+	public static final boolean DEFAULT_COOKED_STATE = false;
 
 	/**
 	 * Ñalorie supplement if the vegetable is cooked.
@@ -44,7 +42,7 @@ public class Tomato extends Vegetable {
 	 *                                      not.
 	 */
 	public Tomato(Freshness statement, int calorieContentPerHundredGrams, int weight, boolean isCooked) {
-		super(statement, calorieContentPerHundredGrams, weight);
+		this(statement, calorieContentPerHundredGrams, weight);
 		this.isCooked = isCooked;
 	}
 
@@ -52,22 +50,15 @@ public class Tomato extends Vegetable {
 	 * @return the calorie supplement depending on the readiness of the tomato.
 	 */
 	private int getCaloriePerHundredGramsCookedSupplement() {
-		int supplement;
 		if (this.isCooked) {
-			supplement = CALORIE_PER_HUNDRED_GRAMS_COOKED_SUPPLEMENT;
+			return CALORIE_PER_HUNDRED_GRAMS_COOKED_SUPPLEMENT;
 		} else {
-			supplement = 0;
+			return 0;
 		}
-		return supplement;
 	}
 
 	@Override
 	public int getTotalCalories() {
 		return super.getTotalCalories() + this.getCaloriePerHundredGramsCookedSupplement();
-	}
-
-	@Override
-	public String toString() {
-		return String.format(Resourcer.getString("vegetables.Tomato.stringMessage"), super.toString());
 	}
 }

@@ -1,6 +1,4 @@
-package ru.rsreu.astashkin0504.vegetables;
-
-import com.prutzkow.resourcer.Resourcer;
+package ru.rsreu.astashkin0504.vegetable;
 
 public class Carrot extends Vegetable {
 
@@ -15,10 +13,5 @@ public class Carrot extends Vegetable {
 	 */
 	public Carrot(Freshness statement, int calorieContentPerHundredGrams, int weight) {
 		super(statement, calorieContentPerHundredGrams, weight);
-	}
-
-	@Override
-	public String toString() {
-		return String.format(Resourcer.getString("vegetables.Carrot.stringMessage"), super.toString());
 	}
 }
