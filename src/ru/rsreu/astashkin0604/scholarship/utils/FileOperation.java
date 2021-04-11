@@ -1,10 +1,15 @@
 package ru.rsreu.astashkin0604.scholarship.utils;
 
 import java.io.File;
+import java.io.FileInputStream;
+import java.io.FileOutputStream;
 import java.io.IOException;
-import java.nio.file.Files;
+import java.io.ObjectInputStream;
+import java.io.ObjectOutputStream;
 
 import com.prutzkow.resourcer.Resourcer;
+
+import ru.rsreu.astashkin0604.scholarship.ScholarshipSheet;
 
 /**
  * Enum describes the operation with the file (copy, move)
@@ -16,23 +21,37 @@ public enum FileOperation {
 
 	COPY {
 		@Override
-		void performOpertaion(String sourcePath, String destinationPath) throws IOException {
-			Files.copy(new File(sourcePath).toPath(), new File(destinationPath).toPath());
-			/*
-			 * InputStream inputStream = null; OutputStream outputStream = null; try {
-			 * inputStream = new BufferedInputStream(new FileInputStream(new
-			 * File(sourcePath))); outputStream = new BufferedOutputStream(new
-			 * FileOutputStream(new File(destinationPath))); int length; byte[] buffer = new
-			 * byte[1024]; while ((length = inputStream.read()) > 0) {
-			 * outputStream.write(buffer, 0, length); } } finally { inputStream.close();
-			 * outputStream.close(); }
-			 */
+		void performOpertaion(String sourcePath, String destinationPath) throws IOException, ClassNotFoundException {
+			//Files.copy(new File(sourcePath).toPath(), new File(destinationPath).toPath());
+			ObjectInputStream inputStream = null; 
+			ObjectOutputStream outputStream = null; 
+			 try {	
+				 inputStream = new ObjectInputStream(new FileInputStream(new File(sourcePath)));
+				 outputStream = new ObjectOutputStream(new FileOutputStream(new File(destinationPath)));
+				 outputStream.writeObject(((ScholarshipSheet[]) inputStream.readObject()));
+				 
+			 } finally {
+				 try {
+					 inputStream.close();
+					 outputStream.close(); 
+				 } catch (NullPointerException e) {
+					 throwIOExceptionByFilesAvailability(sourcePath, destinationPath);
+				 }	 
+			 }
 		}
 	},
 	MOVE {
 		@Override
-		void performOpertaion(String sourcePath, String destinationPath) throws IOException {
-			Files.move(new File(sourcePath).toPath(), new File(destinationPath).toPath());
+		void performOpertaion(String sourcePath, String destinationPath) throws IOException, ClassNotFoundException {
+			//Files.move(new File(sourcePath).toPath(), new File(destinationPath).toPath());
+			COPY.performOpertaion(sourcePath, destinationPath);
+			File moving = new File(sourcePath);
+			try {
+				moving.delete();
+			} catch (SecurityException e) {
+				System.out.println(String.format(Resourcer.getString("files.file.securityExceptionFormat"), moving.getAbsoluteFile()));
+			}
+			
 		}
 	};
 
@@ -43,8 +62,9 @@ public enum FileOperation {
 	 * @param destinationPath - the path to the resulting file.
 	 * @throws IOException if the source file does not exist or the resulting file
 	 *                     has already been created.
+	 * @throws ClassNotFoundException 
 	 */
-	abstract void performOpertaion(String sourcePath, String destinationPath) throws IOException;
+	abstract void performOpertaion(String sourcePath, String destinationPath) throws IOException, ClassNotFoundException;
 
 	/**
 	 * Generates and throw an exception for 2 situations (if the source file does

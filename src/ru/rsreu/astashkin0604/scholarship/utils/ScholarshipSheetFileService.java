@@ -108,7 +108,7 @@ public class ScholarshipSheetFileService {
 			throws IOException {
 		try {
 			operation.performOpertaion(sourcePath, destinationPath);
-		} catch (IOException e) {
+		} catch (IOException | ClassNotFoundException e) {
 			FileOperation.throwIOExceptionByFilesAvailability(sourcePath, destinationPath);
 		}
 	}

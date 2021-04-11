@@ -5,6 +5,8 @@ import java.io.IOException;
 
 import com.prutzkow.resourcer.Resourcer;
 
+import ru.rsreu.astashkin0604.pathutils.FilePathFormer;
+
 public class FoldersStructureCreator {
 
 	private FoldersStructureCreator() {
@@ -32,9 +34,8 @@ public class FoldersStructureCreator {
 			output.append(e.getMessage()).append("\n");
 		}
 		try {
-			output.append(createFolderByPathWithGettingMessage(
-					String.format(Resourcer.getString("files.folder.copy.pathFormat"), File.separator,
-							Resourcer.getString("files.folder.copy.name"))))
+			output.append(createFolderByPathWithGettingMessage(FilePathFormer.formPath(File.separator,
+					Resourcer.getString("files.folder.move.name"), Resourcer.getString("files.folder.copy.name"))))
 					.append("\n");
 		} catch (IOException e) {
 			output.append(e.getMessage()).append("\n");

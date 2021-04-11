@@ -4,6 +4,7 @@ import java.io.IOException;
 
 import com.prutzkow.resourcer.Resourcer;
 
+import ru.rsreu.astashkin0604.pathutils.FilesPathGetter;
 import ru.rsreu.astashkin0604.scholarship.ScholarshipSheet;
 import ru.rsreu.astashkin0604.scholarship.utils.ScholarshipSheetArrayInitializer;
 import ru.rsreu.astashkin0604.scholarship.utils.ScholarshipSheetArrayTextTableGenerator;
@@ -17,6 +18,8 @@ public class ApplicationRunner {
 
 	private static final String MOVING_FILE_PATH = FilesPathGetter.getPathForMoveingFile();
 
+	private static final ScholarshipSheet[] BASIC_ARRAY = ScholarshipSheetArrayInitializer.getInitializedArray();
+
 	private ApplicationRunner() {
 
 	}
@@ -27,8 +30,7 @@ public class ApplicationRunner {
 				ScholarshipSheetArrayInitializer.getInitializedArray()));
 		System.out.println(TaskService.createBackupAndGetMessage(BASIC_FILE_PATH, BACKUP_FILE_PATH));
 
-		System.out.print(String.format(Resourcer.getString("runner.confirmation.messageFormat"),
-				Resourcer.getString("files.folder.source.name"), Resourcer.getString("files.move.source.name")));
+		System.out.print(String.format(Resourcer.getString("runner.confirmation.messageFormat"), BASIC_FILE_PATH, MOVING_FILE_PATH));
 		System.out.println(TaskService.moveFileAndGetMessage(BASIC_FILE_PATH, MOVING_FILE_PATH));
 
 		ScholarshipSheet[] fromBackup = { ScholarshipSheet.NULL_SCHOLARSHIP_SHEET };
@@ -42,31 +44,28 @@ public class ApplicationRunner {
 		}
 
 		StringBuilder output = new StringBuilder();
-		output.append(Resourcer.getString("runner.message.source")).append(ScholarshipSheetArrayTextTableGenerator
-				.getTextTableFromScholarshipSheetArray(ScholarshipSheetArrayInitializer.getInitializedArray()));
+		output.append(Resourcer.getString("runner.message.source"))
+				.append(ScholarshipSheetArrayTextTableGenerator.tryGetTextTable(BASIC_ARRAY));
 
-		output.append(Resourcer.getString("runner.message.bak")).append(tryGetTextTable(fromBackup))
-				.append(Resourcer.getString("runner.message.moving")).append(tryGetTextTable(fromMoving));
+		output.append(Resourcer.getString("runner.message.bak"))
+				.append(ScholarshipSheetArrayTextTableGenerator.tryGetTextTable(fromBackup))
+				.append(Resourcer.getString("runner.message.moving"))
+				.append(ScholarshipSheetArrayTextTableGenerator.tryGetTextTable(fromMoving));
 
-		int[] comparative = TaskService.compareArraysElements(ScholarshipSheetArrayInitializer.getInitializedArray(),
-				fromBackup);
+		System.out.println(compareResults(fromBackup, fromMoving));
+	}
+
+	private static String compareResults(ScholarshipSheet[] fromBackup, ScholarshipSheet[] fromMoving) {
+		StringBuilder output = new StringBuilder();
+		int[] comparative = TaskService.compareArraysElements(BASIC_ARRAY, fromBackup);
 		output.append(Resourcer.getString("runner.message.compareFirst"))
 				.append(TaskService.parseComparativeArrayToString(comparative));
-		comparative = TaskService.compareArraysElements(ScholarshipSheetArrayInitializer.getInitializedArray(),
-				fromMoving);
+		comparative = TaskService.compareArraysElements(BASIC_ARRAY, fromMoving);
 		output.append(Resourcer.getString("runner.message.compareSecond"))
 				.append(TaskService.parseComparativeArrayToString(comparative));
 		comparative = TaskService.compareArraysElements(fromBackup, fromMoving);
 		output.append(Resourcer.getString("runner.message.compareThird"))
 				.append(TaskService.parseComparativeArrayToString(comparative));
-		System.out.println(output);
-	}
-
-	private static String tryGetTextTable(ScholarshipSheet[] array) {
-		try {
-			return ScholarshipSheetArrayTextTableGenerator.getTextTableFromScholarshipSheetArray(array);
-		} catch (NullPointerException e) {
-			return ScholarshipSheetArrayTextTableGenerator.getTextTableHeader();
-		}
+		return output.toString();
 	}
 }
