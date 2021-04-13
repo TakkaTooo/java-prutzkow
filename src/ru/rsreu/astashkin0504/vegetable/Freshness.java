@@ -7,17 +7,24 @@ import com.prutzkow.resourcer.Resourcer;
  */
 public enum Freshness {
 
-	FRESH_STATEMENT(Resourcer.getString("vegetables.Freshness.FRESH_STATEMENT.MESSAGE")),
-	MEDIUM_STATEMENT(Resourcer.getString("vegetables.Freshness.MEDIUM_STATEMENT.MESSAGE")),
-	ROTTEN_STATEMENT(Resourcer.getString("vegetables.Freshness.ROTTEN_STATEMENT.MESSAGE"));
+	FRESH_STATEMENT(Resourcer.getString("vegetables.Freshness.FRESH_STATEMENT.MESSAGE"), 1.5f),
+	MEDIUM_STATEMENT(Resourcer.getString("vegetables.Freshness.MEDIUM_STATEMENT.MESSAGE"), 1.2f),
+	ROTTEN_STATEMENT(Resourcer.getString("vegetables.Freshness.ROTTEN_STATEMENT.MESSAGE"), 1.1f);
 
 	/**
 	 * String value describing the freshness state.
 	 */
 	private final String message;
-
-	Freshness(String message) {
+	
+	private final float caloriesContentCoefficient;
+	
+	Freshness(String message, float caloriesContentCoefficient) {
 		this.message = message;
+		this.caloriesContentCoefficient = caloriesContentCoefficient;
+	}
+	
+	public float getCaloriesContentCoefficient() {
+		return this.caloriesContentCoefficient;
 	}
 
 	@Override

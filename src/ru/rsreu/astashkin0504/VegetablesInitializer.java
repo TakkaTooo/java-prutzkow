@@ -3,9 +3,9 @@ import ru.rsreu.astashkin0504.vegetable.*;
 
 public class VegetablesInitializer {
 
-	private static final Vegetable CARROT = new Carrot(Freshness.FRESH_STATEMENT, 25, 150);
+	private static final Vegetable CARROT = new Carrot(Freshness.FRESH_STATEMENT, 25, 162);
 	private static final Vegetable CUCUMBER = new Cucumber(Freshness.MEDIUM_STATEMENT, 15, 80);
-	private static final Vegetable TOMATO = new Tomato(Freshness.FRESH_STATEMENT, 20, 100, !Tomato.DEFAULT_COOKED_STATE);
+	private static final Vegetable TOMATO = new Tomato(Freshness.FRESH_STATEMENT, 20, 100);
 	
 	/**
 	 * Default private constructor - so that you cannot create instances of the
@@ -16,7 +16,7 @@ public class VegetablesInitializer {
 	}
 
 	/**
-	 * Creates an array of Vegetable instaces.
+	 * Creates an array of Vegetable instances.
 	 * @return Vegetable[].
 	 */
 	public static Vegetable[] initializeVegetablesArray() {
@@ -32,5 +32,6 @@ public class VegetablesInitializer {
 	 */
 	public static Vegetable getSearchingVegetableInstance() {
 		return TOMATO;
+		//return TOMATO;
 	}
 }

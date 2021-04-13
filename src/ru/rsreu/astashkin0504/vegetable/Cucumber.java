@@ -1,5 +1,7 @@
 package ru.rsreu.astashkin0504.vegetable;
 
+import ru.rsreu.astashkin0504.RandomRangeGenerator;
+
 public class Cucumber extends Vegetable {
 
 	/**
@@ -13,5 +15,16 @@ public class Cucumber extends Vegetable {
 	 */
 	public Cucumber(Freshness statement, int calorieContentPerHundredGrams, int weight) {
 		super(statement, calorieContentPerHundredGrams, weight);
+	}
+
+	public void cook() {
+		super.cook();
+		if (this.getStatement() != Freshness.ROTTEN_STATEMENT) {
+			float newCalorieContentPerHundredGrams = this.getCalorieContentPerHundredGrams()
+					* this.getStatement().getCaloriesContentCoefficient()
+					* RandomRangeGenerator.getRandomByRange(Freshness.MEDIUM_STATEMENT.getCaloriesContentCoefficient(),
+							Freshness.FRESH_STATEMENT.getCaloriesContentCoefficient()) / 2;
+			this.setCalorieContentPerHundredGrams(newCalorieContentPerHundredGrams);
+		}
 	}
 }
