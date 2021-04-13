@@ -25,6 +25,15 @@ public abstract class Vegetable implements Comparable<Vegetable> {
 		public String toString() {
 			return "";
 		}
+
+		@Override
+		public void cook() {
+		}
+
+		@Override
+		protected float getCalorieContetPerHundredGramsByCooking() {
+			return 0;
+		}
 	};
 
 	/**
@@ -51,13 +60,12 @@ public abstract class Vegetable implements Comparable<Vegetable> {
 	 * The number of grams for which the calories are distributed.
 	 */
 	protected static final int DISTRIBUTED_CALORIES_GRAMS = 100;
-	
+
 	/**
-	 *TODO 
+	 * Default value of cooked for vegetables.
 	 */
-	private static final boolean DEFAULT_IS_COOKED = false;
-	
-	
+	private static final CookingState DEFAULT_COOKING_STATE = CookingState.RAW;
+
 	/**
 	 * The degree of freshness of a vegetable.
 	 */
@@ -73,8 +81,11 @@ public abstract class Vegetable implements Comparable<Vegetable> {
 	 */
 	private float weight = DEFAULT_WEIGHT;
 
-	private boolean isCooked = DEFAULT_IS_COOKED;
-	
+	/**
+	 * Cooking state of vegetable.
+	 */
+	private CookingState cookingState = DEFAULT_COOKING_STATE;
+
 	/**
 	 * Creates a Vegetable instance by 3 parameters.
 	 * 
@@ -87,15 +98,64 @@ public abstract class Vegetable implements Comparable<Vegetable> {
 	public Vegetable(Freshness statement, float calorieContentPerHundredGrams, float weight) {
 		this.statement = statement;
 		if (isValidCalorieContentPerHundredGrams(calorieContentPerHundredGrams)) {
-			this.calorieContentPerHundredGrams = calorieContentPerHundredGrams;
+			if (isCalorieContentPerHundredGramsLessThanMaxValue(calorieContentPerHundredGrams)) {
+				this.calorieContentPerHundredGrams = calorieContentPerHundredGrams;
+			} else {
+				this.calorieContentPerHundredGrams = MAX_CALORIE_CONTENT_PER_HUNDRED_GRAMS;
+			}
 		}
-		if (weight > 0 && weight <= MAX_WEIGHT) {
-			this.weight = weight;
+		if (isValidWeight(weight)) {
+			if (isWeightLessThanMaxValue(weight)) {
+				this.weight = weight;
+			} else {
+				this.weight = MAX_WEIGHT;
+			}
 		}
 	}
 
 	private Vegetable() {
 
+	}
+
+	/**
+	 * Checks calorie content per hundred grams for admissible (from the point of
+	 * view of logic).
+	 * 
+	 * @param calorieContentPerHundredGrams - checking value.
+	 * @return true - if calorie content per hundred grams value is valid (>0).
+	 */
+	private static boolean isValidCalorieContentPerHundredGrams(float calorieContentPerHundredGrams) {
+		return calorieContentPerHundredGrams > 0;
+	}
+
+	/**
+	 * Checks that calorie content per hundred grams less than max value.
+	 * 
+	 * @param calorieContentPerHundredGrams - checking value.
+	 * @return true - if calorie content per hundred grams less than max value.
+	 */
+	private static boolean isCalorieContentPerHundredGramsLessThanMaxValue(float calorieContentPerHundredGrams) {
+		return calorieContentPerHundredGrams < MAX_CALORIE_CONTENT_PER_HUNDRED_GRAMS;
+	}
+
+	/**
+	 * Checks weight for admissible (from the point of view of logic).
+	 * 
+	 * @param weight - checking value.
+	 * @return true - if weight value is valid (>0).
+	 */
+	private static boolean isValidWeight(float weight) {
+		return weight > 0;
+	}
+
+	/**
+	 * Checks that weight less than max value.
+	 * 
+	 * @param weight - checking value.
+	 * @return true - if weight than max value.
+	 */
+	private static boolean isWeightLessThanMaxValue(float weight) {
+		return weight < MAX_WEIGHT;
 	}
 
 	/**
@@ -106,8 +166,6 @@ public abstract class Vegetable implements Comparable<Vegetable> {
 	}
 
 	/**
-	 * 
-	 * 
 	 * @return calorie content per 100 grams of vegetable (in kcal)
 	 */
 	public float getCalorieContentPerHundredGrams() {
@@ -115,42 +173,10 @@ public abstract class Vegetable implements Comparable<Vegetable> {
 	}
 
 	/**
-	 * 
 	 * @return vegetable weight (in gram).
 	 */
 	public float getWeight() {
 		return this.weight;
-	}
-
-	protected void setCalorieContentPerHundredGrams(float calorieContentPerHundredGrams) {
-		if (isValidCalorieContentPerHundredGrams(calorieContentPerHundredGrams)) {
-			this.calorieContentPerHundredGrams = calorieContentPerHundredGrams;
-		} else if (isCalorieContentPerHundredGramsMoreThanMaxValue(calorieContentPerHundredGrams)) {
-			this.calorieContentPerHundredGrams = MAX_CALORIE_CONTENT_PER_HUNDRED_GRAMS;
-		} else {
-			this.calorieContentPerHundredGrams = DEFAULT_CALORIE_CONTENT_PER_HUNDRED_GRAMS;
-		}
-	}
-	
-	protected static boolean isCalorieContentPerHundredGramsMoreThanMaxValue(float calorieContentPerHundredGrams) {
-		return calorieContentPerHundredGrams > MAX_CALORIE_CONTENT_PER_HUNDRED_GRAMS;
-	}
-	private static boolean isValidCalorieContentPerHundredGrams(float calorieContentPerHundredGrams) {
-		return !isCalorieContentPerHundredGramsMoreThanMaxValue(calorieContentPerHundredGrams) && calorieContentPerHundredGrams > 0;
-	}
-	
-	/**
-	 * Decreases the degree of freshness of the vegetable by 1 notch.
-	 * 
-	 * @throws WorstConditionException in case the vegetable is already in a worse
-	 *                                 condition.
-	 */
-	public void worseCondition() throws WorstConditionException {
-		if (statement.ordinal() < Freshness.values().length - 1) {
-			this.statement = Freshness.values()[statement.ordinal() + 1];
-		} else {
-			throw new WorstConditionException(Resourcer.getString("vegetables.Vegetable.exceptionMessage"));
-		}
 	}
 
 	/**
@@ -161,12 +187,51 @@ public abstract class Vegetable implements Comparable<Vegetable> {
 	}
 
 	/**
-	 * TODO
+	 * @return cooking state of vegetable.
+	 */
+	public CookingState getCookingState() {
+		return this.cookingState;
+	}
+
+	/**
+	 * Decreases the degree of freshness of the vegetable by 1 notch.
+	 * 
+	 * @throws WorstConditionException in case the vegetable is already in a worse
+	 *                                 condition.
+	 */
+	public void worseCondition() throws WorstConditionException {
+		if (statement.ordinal() < Freshness.values().length - 1) {
+			if (this.cookingState == CookingState.COOKED) {
+				this.statement = Freshness.values()[statement.ordinal() + 1];
+			}
+		} else {
+			throw new WorstConditionException(Resourcer.getString("vegetables.Vegetable.exceptionMessage"));
+		}
+	}
+
+	/**
+	 * Cooks vegetable. Changes calories content by calculations of
+	 * getCalorieContentPerHundredGramsByCooking().
+	 * 
 	 */
 	public void cook() {
-		this.isCooked = !DEFAULT_IS_COOKED;
+		this.cookingState = CookingState.COOKED;
+		float newCalorieContent = this.getCalorieContetPerHundredGramsByCooking();
+		if (isValidCalorieContentPerHundredGrams(newCalorieContent)) {
+			if (isCalorieContentPerHundredGramsLessThanMaxValue(newCalorieContent)) {
+				this.calorieContentPerHundredGrams = newCalorieContent;
+			} else {
+				this.calorieContentPerHundredGrams = MAX_CALORIE_CONTENT_PER_HUNDRED_GRAMS;
+			}
+		}
 	}
-	
+
+	/**
+	 * Calculates new calorie content after cooking.
+	 * @return new calorie content
+	 */
+	protected abstract float getCalorieContetPerHundredGramsByCooking();
+
 	/**
 	 * The comparison is carried out according to the total calorie content of
 	 * vegetables, if they are equal in weight.
@@ -187,6 +252,7 @@ public abstract class Vegetable implements Comparable<Vegetable> {
 	@Override
 	public String toString() {
 		return String.format(Resourcer.getString("vegetables.Vegetable.stringMessageFormat"),
-				this.getClass().getSimpleName(), this.statement.toString(), this.weight, this.getTotalCalories(), this.isCooked);
+				this.getClass().getSimpleName(), this.statement.toString(), this.weight,
+				this.calorieContentPerHundredGrams, this.getTotalCalories(), this.cookingState);
 	}
 }

@@ -16,10 +16,8 @@ public class Tomato extends Vegetable {
 	}
 
 	@Override
-	public void cook() {
-		super.cook();
-		float newCalorieContentPerHundredGram = (float) (this.getStatement().getCaloriesContentCoefficient()
-				* Math.pow(this.getCalorieContentPerHundredGrams(), 1.3f));
-		this.setCalorieContentPerHundredGrams(newCalorieContentPerHundredGram);
+	protected float getCalorieContetPerHundredGramsByCooking() {
+		return (float) (this.getStatement().getCaloriesContentCoefficient()
+				* Math.pow(this.getCalorieContentPerHundredGrams(), 1.1f));
 	}
 }

@@ -15,14 +15,18 @@ public enum Freshness {
 	 * String value describing the freshness state.
 	 */
 	private final String message;
-	
+
+	/**
+	 * Coefficient of calories content increasing after cooking for Vegetable with
+	 * specific state.
+	 */
 	private final float caloriesContentCoefficient;
-	
+
 	Freshness(String message, float caloriesContentCoefficient) {
 		this.message = message;
 		this.caloriesContentCoefficient = caloriesContentCoefficient;
 	}
-	
+
 	public float getCaloriesContentCoefficient() {
 		return this.caloriesContentCoefficient;
 	}

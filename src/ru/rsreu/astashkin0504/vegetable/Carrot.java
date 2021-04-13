@@ -16,12 +16,12 @@ public class Carrot extends Vegetable {
 	}
 
 	@Override
-	public void cook() {
-		super.cook();
+	protected float getCalorieContetPerHundredGramsByCooking() {
+		float newCalorieContentPerHundredGrams = 0;
 		if (this.getStatement() == Freshness.FRESH_STATEMENT) {
-			float newCalorieContentPerHundredGrams = (float) (Math.pow(
-					this.getStatement().getCaloriesContentCoefficient(), 2) * this.getCalorieContentPerHundredGrams());
-			this.setCalorieContentPerHundredGrams(newCalorieContentPerHundredGrams);
+			newCalorieContentPerHundredGrams = (float) (Math.pow(this.getStatement().getCaloriesContentCoefficient(), 2)
+					* this.getCalorieContentPerHundredGrams());
 		}
+		return newCalorieContentPerHundredGrams;
 	}
 }

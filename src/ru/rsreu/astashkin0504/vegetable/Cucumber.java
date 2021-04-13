@@ -17,14 +17,16 @@ public class Cucumber extends Vegetable {
 		super(statement, calorieContentPerHundredGrams, weight);
 	}
 
-	public void cook() {
-		super.cook();
+	@Override
+	protected float getCalorieContetPerHundredGramsByCooking() {
+		float newCalorieContentPerHundredGrams = this.getCalorieContentPerHundredGrams();
 		if (this.getStatement() != Freshness.ROTTEN_STATEMENT) {
-			float newCalorieContentPerHundredGrams = this.getCalorieContentPerHundredGrams()
-					* this.getStatement().getCaloriesContentCoefficient()
-					* RandomRangeGenerator.getRandomByRange(Freshness.MEDIUM_STATEMENT.getCaloriesContentCoefficient(),
-							Freshness.FRESH_STATEMENT.getCaloriesContentCoefficient()) / 2;
-			this.setCalorieContentPerHundredGrams(newCalorieContentPerHundredGrams);
+			float randomCoifficient = RandomRangeGenerator.getRandomByRange(
+					Freshness.MEDIUM_STATEMENT.getCaloriesContentCoefficient(),
+					Freshness.FRESH_STATEMENT.getCaloriesContentCoefficient());
+			newCalorieContentPerHundredGrams *= this.getStatement().getCaloriesContentCoefficient() * randomCoifficient
+					/ 2;
 		}
+		return newCalorieContentPerHundredGrams;
 	}
 }

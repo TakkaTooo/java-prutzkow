@@ -15,6 +15,17 @@ public class ChefService {
 	}
 
 	/**
+	 * Cook all vegetables in salad.
+	 * 
+	 * @param salad - Salad for cooking.
+	 */
+	public static void cookSalad(Salad salad) {
+		for (Vegetable vegetable : salad.getVegetables()) {
+			vegetable.cook();
+		}
+	}
+
+	/**
 	 * Sorts an array of Vegetables.
 	 * 
 	 * @param salad - processed array.

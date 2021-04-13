@@ -5,7 +5,7 @@ public class VegetablesInitializer {
 
 	private static final Vegetable CARROT = new Carrot(Freshness.FRESH_STATEMENT, 25, 162);
 	private static final Vegetable CUCUMBER = new Cucumber(Freshness.MEDIUM_STATEMENT, 15, 80);
-	private static final Vegetable TOMATO = new Tomato(Freshness.FRESH_STATEMENT, 20, 100);
+	private static final Vegetable TOMATO = new Tomato(Freshness.FRESH_STATEMENT, 15, 100);
 	
 	/**
 	 * Default private constructor - so that you cannot create instances of the
@@ -32,6 +32,5 @@ public class VegetablesInitializer {
 	 */
 	public static Vegetable getSearchingVegetableInstance() {
 		return TOMATO;
-		//return TOMATO;
 	}
 }
