@@ -38,12 +38,15 @@ public class ScholarshipSheetFileService {
 			outputFile.createNewFile();
 			outputStream = new FileOutputStream(outputFile);
 			objectOutputStream = new ObjectOutputStream(outputStream);
-			objectOutputStream.writeObject(sheets);
+			try {
+				objectOutputStream.writeObject(sheets);
+			} finally {
+				closeOpenedStreams(outputStream, objectOutputStream);
+			}
+			
 		} catch (IOException e) {
 			throw new IOException(String.format(Resourcer.getString("files.file.errorOnCreatingFormat"),
 					outputFile.getAbsolutePath()));
-		} finally {
-			closeOpenedStreams(outputFile, outputStream, objectOutputStream);
 		}
 	}
 
@@ -68,7 +71,7 @@ public class ScholarshipSheetFileService {
 				objectInputStream = new ObjectInputStream(inputStream);
 				output = ((ScholarshipSheet[]) objectInputStream.readObject());
 			} finally {
-				closeOpenedStreams(inputFile, inputStream, objectInputStream);
+				closeOpenedStreams(inputStream, objectInputStream);
 			}
 
 		} else {
@@ -84,16 +87,10 @@ public class ScholarshipSheetFileService {
 	 * @param inputFile    - the file for which streams were opened
 	 * @param fileStream
 	 * @param objectStream
-	 * @throws IOException in case the stream was not opened.
+	 * @throws IOException if an I/O error occurs.
 	 */
-	private static void closeOpenedStreams(File inputFile, Closeable fileStream, Closeable objectStream)
-			throws IOException {
-		try {
-			fileStream.close();
-			objectStream.close();
-		} catch (NullPointerException e) {
-			throw new IOException(String.format(Resourcer.getString("files.file.exceptionBadFileFormat"),
-					inputFile.getAbsolutePath()));
-		}
+	private static void closeOpenedStreams(Closeable fileStream, Closeable objectStream) throws IOException {
+		objectStream.close();	
+		fileStream.close();
 	}
 }

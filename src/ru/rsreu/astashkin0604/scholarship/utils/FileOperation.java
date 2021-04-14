@@ -2,8 +2,10 @@ package ru.rsreu.astashkin0604.scholarship.utils;
 
 import java.io.File;
 import java.io.FileInputStream;
+import java.io.FileNotFoundException;
 import java.io.FileOutputStream;
 import java.io.IOException;
+import java.io.InputStream;
 import java.io.OutputStream;
 
 import com.prutzkow.resourcer.Resourcer;
@@ -21,26 +23,7 @@ public enum FileOperation {
 	COPYING {
 		@Override
 		public void performOpertaion(String sourcePath, String destinationPath) throws IOException {
-			OutputStream outputStream = null;
-			File file = new File(sourcePath);
-			FileInputStream fileInputStream = null;
-			byte[] bFile = new byte[(int) file.length()];
-			try {
-				fileInputStream = new FileInputStream(file);
-				fileInputStream.read(bFile);
-				fileInputStream.close();
-				outputStream = new FileOutputStream(new File(destinationPath));
-				outputStream.write(bFile);
-			} finally {
-				try {
-					fileInputStream.close();
-					outputStream.close();
-				} catch (NullPointerException e) {
-					throw new IOException(
-							String.format(Resourcer.getString("files.file.copy.exception"), file.getAbsoluteFile()));
-				}
-
-			}
+			writeBytesToFile(new File(destinationPath), getBytesFromFile(new File(sourcePath)));
 		}
 	},
 	/**
@@ -70,5 +53,56 @@ public enum FileOperation {
 	 * @throws ClassNotFoundException
 	 */
 	public abstract void performOpertaion(String sourcePath, String destinationPath) throws IOException;
+
+	/**
+	 * Gets bytes from file.
+	 * 
+	 * @param file - input file.
+	 * @return byte array of file.
+	 * @throws IOException If the first byte cannot be read for any reasonother than
+	 *                     the end of the file, if the input stream has been closed,
+	 *                     orif some other I/O error occurs or file not found.
+	 */
+	private static byte[] getBytesFromFile(File file) throws IOException {
+		byte[] bytes = new byte[(int) file.length()];
+		try {
+			InputStream inputStream = new FileInputStream(file);
+			try {
+				inputStream.read(bytes);
+			} finally {
+				inputStream.close();
+			}
+		} catch (FileNotFoundException e) {
+			throw new IOException(generateExceptionMessage(file, "files.file.copy.exception"));
+		}
+		return bytes;
+	}
+
+	/**
+	 * Writes bytes to file.
+	 * 
+	 * @param file  - output file.
+	 * @param bytes - writtine bytes
+	 * @throws IOException - if an I/O error occurs or if the file exists but is a
+	 *                     directoryrather than a regular file, does not exist but
+	 *                     cannotbe created, or cannot be opened for any other
+	 *                     reason.
+	 */
+	private static void writeBytesToFile(File file, byte[] bytes) throws IOException {
+		try {
+			OutputStream outputStream = new FileOutputStream(file.getAbsolutePath());
+			try {
+				outputStream.write(bytes);
+			} finally {
+				outputStream.close();
+			}
+		} catch (FileNotFoundException e) {
+			throw new IOException(generateExceptionMessage(file, "files.file.copy.exceptionWithWriting"));
+		}
+	}
+	
+	private static String generateExceptionMessage(File file, String formatResourceKey) {
+		return String.format(Resourcer.getString(formatResourceKey), file.getAbsolutePath());
+	}
 
 }

@@ -19,8 +19,7 @@ public class FolderCreator {
 	 * @throws IOException in case the folder has already been created.
 	 */
 	public static boolean createFolderByPath(String folderPath) {
-		File folderCreator = new File(folderPath);
-		return folderCreator.mkdir();
+		return new File(folderPath).mkdir();
 	}
 
 	/**
