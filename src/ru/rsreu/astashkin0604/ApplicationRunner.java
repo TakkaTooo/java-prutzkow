@@ -1,13 +1,17 @@
 package ru.rsreu.astashkin0604;
 
+import java.io.File;
 import java.io.IOException;
+import java.util.Scanner;
 
 import com.prutzkow.resourcer.Resourcer;
 
+import ru.rsreu.astashkin0604.pathutils.FilePathFormer;
 import ru.rsreu.astashkin0604.pathutils.FilesPathGetter;
 import ru.rsreu.astashkin0604.scholarship.ScholarshipSheet;
+import ru.rsreu.astashkin0604.scholarship.utils.FileOperation;
 import ru.rsreu.astashkin0604.scholarship.utils.ScholarshipSheetArrayInitializer;
-import ru.rsreu.astashkin0604.scholarship.utils.ScholarshipSheetArrayTextTableGenerator;
+import ru.rsreu.astashkin0604.scholarship.utils.ScholarshipSheetArrayTextTableFormer;
 import ru.rsreu.astashkin0604.scholarship.utils.ScholarshipSheetFileService;
 
 public class ApplicationRunner {
@@ -25,47 +29,112 @@ public class ApplicationRunner {
 	}
 
 	public static void main(String[] args) {
-		System.out.println(FoldersStructureCreator.createFoldersStructureWithGettingMessage());
-		System.out.println(TaskService.createFileFromArrayAndGetMessage(BASIC_FILE_PATH,
-				ScholarshipSheetArrayInitializer.getInitializedArray()));
-		System.out.println(TaskService.createBackupAndGetMessage(BASIC_FILE_PATH, BACKUP_FILE_PATH));
+		// Creating folders
+		String folderName;
+		folderName = Resourcer.getString("files.folder.source.name");
+		if (FolderCreator.createFolderByPath(folderName)) {
+			System.out.println(FolderCreator.generateSuccessMessage(new File(folderName).getAbsolutePath()));
+		}
 
-		System.out.print(String.format(Resourcer.getString("runner.confirmation.messageFormat"), BASIC_FILE_PATH, MOVING_FILE_PATH));
-		System.out.println(TaskService.moveFileAndGetMessage(BASIC_FILE_PATH, MOVING_FILE_PATH));
+		folderName = Resourcer.getString("files.folder.move.name");
+		if (FolderCreator.createFolderByPath(folderName)) {
+			System.out.println(FolderCreator.generateSuccessMessage(new File(folderName).getAbsolutePath()));
+		}
 
+		folderName = FilePathFormer.formPath(File.separator, Resourcer.getString("files.folder.move.name"),
+				Resourcer.getString("files.folder.copy.name"));
+		if (FolderCreator.createFolderByPath(folderName)) {
+			System.out.println(FolderCreator.generateSuccessMessage(new File(folderName).getAbsolutePath()));
+		}
+
+		StringBuilder operationMessage = new StringBuilder();
+		// Create file from array
+		try {
+			ScholarshipSheetFileService.createFileFromScholarshipSheetArray(BASIC_ARRAY, BASIC_FILE_PATH);
+			operationMessage.append(String.format(Resourcer.getString("files.file.successFormat"), BASIC_FILE_PATH));
+		} catch (IOException e) {
+			operationMessage.append(e.getMessage());
+		}
+		System.out.println(operationMessage);
+		operationMessage = new StringBuilder();
+
+		// Create bak file
+		try {
+			FileOperation.COPYING.performOpertaion(BASIC_FILE_PATH, BACKUP_FILE_PATH);
+			operationMessage.append(String.format(Resourcer.getString("files.file.successFormat"), BACKUP_FILE_PATH));
+		} catch (IOException e) {
+			operationMessage.append(e.getMessage());
+		}
+		System.out.println(operationMessage);
+
+		operationMessage = new StringBuilder();
+
+		// Moving file
+		System.out.print(String.format(Resourcer.getString("runner.confirmation.messageFormat"), BASIC_FILE_PATH,
+				MOVING_FILE_PATH));
+		Scanner in = new Scanner(System.in);
+		try {
+			performMovingByUserDecision(in.nextLine(), BASIC_FILE_PATH, MOVING_FILE_PATH);
+			operationMessage.append(String.format(Resourcer.getString("files.file.successMovingFormat"),
+					BASIC_FILE_PATH, MOVING_FILE_PATH));
+
+		} catch (IOException | ClassNotFoundException | IllegalArgumentException e) {
+			operationMessage.append(e.getMessage());
+		} finally {
+			in.close();
+		}
+		System.out.println(operationMessage);
+
+		// Comapring arrays
 		ScholarshipSheet[] fromBackup = { ScholarshipSheet.NULL_SCHOLARSHIP_SHEET };
 		ScholarshipSheet[] fromMoving = { ScholarshipSheet.NULL_SCHOLARSHIP_SHEET };
 
 		try {
 			fromBackup = ScholarshipSheetFileService.getScholarshipSheetArrayFromFile(BACKUP_FILE_PATH);
-			fromMoving = ScholarshipSheetFileService.getScholarshipSheetArrayFromFile(MOVING_FILE_PATH);
 		} catch (IOException | ClassNotFoundException e) {
 			System.out.println(e.getMessage());
 		}
 
-		StringBuilder output = new StringBuilder();
-		output.append(Resourcer.getString("runner.message.source"))
-				.append(ScholarshipSheetArrayTextTableGenerator.tryGetTextTable(BASIC_ARRAY));
-
-		output.append(Resourcer.getString("runner.message.bak"))
-				.append(ScholarshipSheetArrayTextTableGenerator.tryGetTextTable(fromBackup))
-				.append(Resourcer.getString("runner.message.moving"))
-				.append(ScholarshipSheetArrayTextTableGenerator.tryGetTextTable(fromMoving));
-
-		System.out.println(compareResults(fromBackup, fromMoving));
+		try {
+			fromMoving = ScholarshipSheetFileService.getScholarshipSheetArrayFromFile(MOVING_FILE_PATH);
+		} catch (IOException | ClassNotFoundException e) {
+			System.out.println(e.getMessage());
+		}
+		StringBuilder tablesWithComparingResults = new StringBuilder();
+		tablesWithComparingResults
+				.append(ScholarshipSheetArrayTextTableFormer.formTextTable(BASIC_ARRAY, "runner.message.source"))
+				.append(ScholarshipSheetArrayTextTableFormer.formTextTable(fromBackup, "runner.message.bak"))
+				.append(ScholarshipSheetArrayTextTableFormer.formTextTable(fromMoving, "runner.message.moving"))
+				.append(ArraysComparingService.formCompareResults(BASIC_ARRAY, fromBackup,
+						"runner.message.comparing.first"))
+				.append(ArraysComparingService.formCompareResults(BASIC_ARRAY, fromMoving,
+						"runner.message.comparing.second"))
+				.append(ArraysComparingService.formCompareResults(fromBackup, fromMoving,
+						"runner.message.comparing.third"));
+		System.out.println(tablesWithComparingResults);
 	}
 
-	private static String compareResults(ScholarshipSheet[] fromBackup, ScholarshipSheet[] fromMoving) {
-		StringBuilder output = new StringBuilder();
-		int[] comparative = TaskService.compareArraysElements(BASIC_ARRAY, fromBackup);
-		output.append(Resourcer.getString("runner.message.compareFirst"))
-				.append(TaskService.parseComparativeArrayToString(comparative));
-		comparative = TaskService.compareArraysElements(BASIC_ARRAY, fromMoving);
-		output.append(Resourcer.getString("runner.message.compareSecond"))
-				.append(TaskService.parseComparativeArrayToString(comparative));
-		comparative = TaskService.compareArraysElements(fromBackup, fromMoving);
-		output.append(Resourcer.getString("runner.message.compareThird"))
-				.append(TaskService.parseComparativeArrayToString(comparative));
-		return output.toString();
+	/**
+	 * Performs a file move operation depending on the string value entered by the
+	 * user
+	 * 
+	 * @param userDecision    - user entered string ("y" - operation will perform).
+	 * @param sourcePath      - path to source file
+	 * @param destinationPath - destination file path
+	 * @throws IOException              - in case the source file does not exist or
+	 *                                  the destination file has already been
+	 *                                  created.
+	 * @throws IllegalArgumentException - if the user string is not y and n
+	 * @throws ClassNotFoundException
+	 */
+	private static void performMovingByUserDecision(String userDecision, String sourcePath, String destinationPath)
+			throws IOException, IllegalArgumentException, ClassNotFoundException {
+		String userString = userDecision.toLowerCase();
+		if (userString.equals(Resourcer.getString("runner.yes.confirmation"))) {
+			FileOperation.MOVING.performOpertaion(sourcePath, destinationPath);
+		} else if (!userString.equals(Resourcer.getString("runner.no.confirmation"))) {
+			throw new IllegalArgumentException(Resourcer.getString("runner.exception.message"));
+		}
 	}
+
 }

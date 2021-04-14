@@ -26,10 +26,11 @@ public class FilesPathGetter {
 	 * @return String path to the backup source file.
 	 */
 	public static String getBackupFilePath() {
-		return new File(FilePathFormer.formPath(File.separator, Resourcer.getString("files.folder.move.name"),
-				Resourcer.getString("files.folder.copy.name"),
-				Resourcer.getString("files.file.data.name") + Resourcer.getString("files.file.backup.extension")))
-						.getAbsolutePath();
+		String fileName = FilePathFormer.formFileNameWithExtension(Resourcer.getString("files.file.data.name"),
+				Resourcer.getString("files.file.backup.extension"));
+		String filePath = FilePathFormer.formPath(File.separator, Resourcer.getString("files.folder.move.name"),
+				Resourcer.getString("files.folder.copy.name"), fileName);
+		return new File(filePath).getAbsolutePath();
 	}
 
 	/**

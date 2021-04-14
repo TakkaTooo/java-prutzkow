@@ -9,4 +9,12 @@ public class FilePathFormer {
 		String path = StringJoiner.join(separator, pathElements);
 		return path;
 	}
+
+	/**
+	 * Forms the file name in the form "fileName.extension".
+	 * @return forming name of the file.
+	 */
+	public static String formFileNameWithExtension(String fileName, String extension) {
+		return fileName + "." + extension;
+	}
 }

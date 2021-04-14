@@ -34,12 +34,14 @@ public class ScholarshipSheetFileService {
 		File outputFile = new File(filePath);
 		OutputStream outputStream = null;
 		ObjectOutputStream objectOutputStream = null;
-		outputFile.createNewFile();
 		try {
+			outputFile.createNewFile();
 			outputStream = new FileOutputStream(outputFile);
 			objectOutputStream = new ObjectOutputStream(outputStream);
 			objectOutputStream.writeObject(sheets);
-
+		} catch (IOException e) {
+			throw new IOException(String.format(Resourcer.getString("files.file.errorOnCreatingFormat"),
+					outputFile.getAbsolutePath()));
 		} finally {
 			closeOpenedStreams(outputFile, outputStream, objectOutputStream);
 		}
@@ -92,24 +94,6 @@ public class ScholarshipSheetFileService {
 		} catch (NullPointerException e) {
 			throw new IOException(String.format(Resourcer.getString("files.file.exceptionBadFileFormat"),
 					inputFile.getAbsolutePath()));
-		}
-	}
-
-	/**
-	 * Wrapping enum FileOperation constants methods.
-	 * 
-	 * @param sourcePath      - source file path.
-	 * @param destinationPath - the path to the resulting file
-	 * @param operation
-	 * @throws IOException if the source file does not exist or the resulting file
-	 *                     has already been created
-	 */
-	public static void performOperationWithFile(String sourcePath, String destinationPath, FileOperation operation)
-			throws IOException {
-		try {
-			operation.performOpertaion(sourcePath, destinationPath);
-		} catch (IOException | ClassNotFoundException e) {
-			FileOperation.throwIOExceptionByFilesAvailability(sourcePath, destinationPath);
 		}
 	}
 }
