@@ -1,4 +1,4 @@
-package ru.rsreu.astashkin0604.scholarship;
+package ru.rsreu.astashkin0704.scholarship;
 
 import java.io.Serializable;
 import java.util.Objects;
@@ -22,15 +22,6 @@ public class ScholarshipSheet implements Comparable<ScholarshipSheet>, Serializa
 		@Override
 		public int compareTo(ScholarshipSheet o) {
 			return -1;
-		}
-
-		public int hashCode() {
-			return 0;
-		}
-
-		@Override
-		public boolean equals(Object obj) {
-			return false;
 		}
 
 		@Override

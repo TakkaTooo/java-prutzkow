@@ -1,4 +1,4 @@
-package ru.rsreu.astashkin0604.scholarship;
+package ru.rsreu.astashkin0704.scholarship;
 
 import com.prutzkow.resourcer.Resourcer;
 
