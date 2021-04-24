@@ -74,9 +74,10 @@ public class ApplicationRunner {
 				MOVING_FILE_PATH));
 		Scanner in = new Scanner(System.in);
 		try {
-			performMovingByUserDecision(in.nextLine(), BASIC_FILE_PATH, MOVING_FILE_PATH);
-			operationMessage.append(String.format(Resourcer.getString("files.file.successMovingFormat"),
-					BASIC_FILE_PATH, MOVING_FILE_PATH));
+			if (performMovingByUserDecision(in.nextLine(), BASIC_FILE_PATH, MOVING_FILE_PATH)) {
+				operationMessage.append(String.format(Resourcer.getString("files.file.successMovingFormat"),
+						BASIC_FILE_PATH, MOVING_FILE_PATH));
+			}
 
 		} catch (IOException | ClassNotFoundException | IllegalArgumentException e) {
 			operationMessage.append(e.getMessage());
@@ -127,14 +128,16 @@ public class ApplicationRunner {
 	 * @throws IllegalArgumentException - if the user string is not y and n
 	 * @throws ClassNotFoundException
 	 */
-	private static void performMovingByUserDecision(String userDecision, String sourcePath, String destinationPath)
+	private static boolean performMovingByUserDecision(String userDecision, String sourcePath, String destinationPath)
 			throws IOException, IllegalArgumentException, ClassNotFoundException {
 		String userString = userDecision.toLowerCase();
 		if (userString.equals(Resourcer.getString("runner.yes.confirmation"))) {
 			FileOperation.MOVING.performOpertaion(sourcePath, destinationPath);
+			return true;
 		} else if (!userString.equals(Resourcer.getString("runner.no.confirmation"))) {
 			throw new IllegalArgumentException(Resourcer.getString("runner.exception.message"));
 		}
+		return false;
 	}
 
 }

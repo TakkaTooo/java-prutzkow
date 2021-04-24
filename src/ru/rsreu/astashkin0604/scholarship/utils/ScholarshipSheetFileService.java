@@ -41,9 +41,13 @@ public class ScholarshipSheetFileService {
 			try {
 				objectOutputStream.writeObject(sheets);
 			} finally {
-				closeOpenedStreams(outputStream, objectOutputStream);
+				try {
+					closeOpenedStreams(outputStream, objectOutputStream);
+				} catch (NullPointerException e) {
+					throw new IOException(String.format(Resourcer.getString("files.file.create.exception"), filePath));
+				}
 			}
-			
+
 		} catch (IOException e) {
 			throw new IOException(String.format(Resourcer.getString("files.file.errorOnCreatingFormat"),
 					outputFile.getAbsolutePath()));
@@ -71,7 +75,11 @@ public class ScholarshipSheetFileService {
 				objectInputStream = new ObjectInputStream(inputStream);
 				output = ((ScholarshipSheet[]) objectInputStream.readObject());
 			} finally {
-				closeOpenedStreams(inputStream, objectInputStream);
+				try {
+					closeOpenedStreams(inputStream, objectInputStream);
+				} catch (NullPointerException e) {
+					throw new IOException(String.format(Resourcer.getString("files.file.read.exception"), filePath));
+				}
 			}
 
 		} else {
@@ -90,7 +98,7 @@ public class ScholarshipSheetFileService {
 	 * @throws IOException if an I/O error occurs.
 	 */
 	private static void closeOpenedStreams(Closeable fileStream, Closeable objectStream) throws IOException {
-		objectStream.close();	
+		objectStream.close();
 		fileStream.close();
 	}
 }
