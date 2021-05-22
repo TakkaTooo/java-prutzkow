@@ -4,22 +4,43 @@ import java.sql.Connection;
 import java.sql.PreparedStatement;
 import java.sql.ResultSet;
 import java.sql.SQLException;
+import java.util.ArrayList;
 import java.util.HashMap;
 import java.util.Iterator;
+import java.util.List;
 import java.util.Map;
 
-public class Client {
+public class JdbcClient {
 	private Connection connection;
 
-	public Client(Connection connection) {
+	public JdbcClient(Connection connection) {
 		this.connection = connection;
 	}
-
-	public ResultSet executeQuery(String sql, String... arguments) throws SQLException {
+	
+	public List<Map<String, Object>> executeQuery(String sql, String... arguments) throws SQLException {
+		return this.parseResultOfQuery(this.getReadyPreparedStatement(sql, arguments));
+	}
+	
+	private List<Map<String, Object>> parseResultOfQuery(PreparedStatement statement) throws SQLException {
+		List<Map<String, Object>> result = new ArrayList<Map<String, Object>>();
+		ResultSet resultSet = statement.executeQuery();
+		int columnCount = resultSet.getMetaData().getColumnCount();
+		while(resultSet.next()) {
+			Map<String, Object> resultMap = new HashMap<String, Object>(); 
+			for (int i = 1; i <= columnCount; i++) {
+				resultMap.put(resultSet.getMetaData().getColumnLabel(i), resultSet.getObject(i));
+			}
+			result.add(resultMap);
+		}
+		statement.close();
+		return result;
+	}
+	
+	public PreparedStatement getReadyPreparedStatement(String sql, String... arguments) throws SQLException {
 		Map<Integer, String> argumentsForStatement = getArgumentsForStatement(arguments);
-		PreparedStatement statement = connection.prepareStatement(sql);
+		PreparedStatement statement = this.connection.prepareStatement(sql);
 		setStringForPreparedStatement(statement, argumentsForStatement);
-		return statement.executeQuery();
+		return statement;
 	}
 
 	private static Map<Integer, String> getArgumentsForStatement(String[] arguments) {

@@ -2,8 +2,6 @@ package ru.rsreu.astashkin0804.datalayer.model;
 
 import java.util.Date;
 
-import ru.rsreu.astashkin0804.DateStringConverter;
-
 public final class DetailDeal {
 	private int id;
 	private Date comissionDate;
@@ -25,38 +23,30 @@ public final class DetailDeal {
 	}
 
 	public int getId() {
-		return id;
+		return this.id;
 	}
 
 	public Date getComissionDate() {
-		return comissionDate;
+		return this.comissionDate;
 	}
 
 	public String getProductName() {
-		return productName;
+		return this.productName;
 	}
 
 	public int getQuantity() {
-		return quantity;
+		return this.quantity;
 	}
 
 	public String getBuyerTelephoneNumber() {
-		return buyerTelephoneNumber;
+		return this.buyerTelephoneNumber;
 	}
 
 	public String getBuyerContactPerson() {
-		return buyerContactPerson;
+		return this.buyerContactPerson;
 	}
 
 	public boolean isWholesale() {
-		return isWholesale;
-	}
-
-	@Override
-	public String toString() {
-		return String.format(
-				"id: %d, date: %s, product name: %s, quantity: %d, telephone: %s, person: %s, is wholesale: %b",
-				this.id, DateStringConverter.convertDateToString(this.comissionDate), this.productName, this.quantity,
-				this.buyerTelephoneNumber, this.buyerContactPerson, this.isWholesale);
+		return this.isWholesale;
 	}
 }

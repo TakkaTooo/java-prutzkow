@@ -1,10 +1,10 @@
 package ru.rsreu.astashkin0804.datalayer.model;
 
-public final class CostByMonthSheet {
+public final class MonthlyRevenueSheet {
 	private int monthNumber;
 	private float cost;
 
-	public CostByMonthSheet(int monthNumber, float cost) {
+	public MonthlyRevenueSheet(int monthNumber, float cost) {
 		this.monthNumber = monthNumber;
 		this.cost = cost;
 	}
@@ -15,11 +15,5 @@ public final class CostByMonthSheet {
 
 	public float getCost() {
 		return this.cost;
-	}
-	
-	@Override
-	public String toString() {
-		return String.format("month: %d, cost: %.2f", this.monthNumber, this.cost);
-		
 	}
 }

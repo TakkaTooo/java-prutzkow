@@ -2,7 +2,7 @@ package ru.rsreu.astashkin0804.datalayer;
 
 import java.sql.SQLException;
 
-import ru.rsreu.astashkin0804.DbConfiguration;
+import ru.rsreu.astashkin0804.datalayer.configuration.DbConfiguration;
 import ru.rsreu.astashkin0804.datalayer.oracledb.OracleDbDaoFactory;
 
 public enum DbType {
@@ -30,5 +30,4 @@ public enum DbType {
 	}
 
 	public abstract DaoFactory getDaoFactory(DbConfiguration dbConfiguration);
-
 }

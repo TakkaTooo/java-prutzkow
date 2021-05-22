@@ -1,20 +1,18 @@
 package ru.rsreu.astashkin0804.datalayer.oracledb;
 
-import java.sql.Connection;
 import java.sql.DriverManager;
 import java.sql.SQLException;
 import java.util.Locale;
 
-import ru.rsreu.astashkin0804.DbConfiguration;
 import ru.rsreu.astashkin0804.datalayer.BuyerDao;
-import ru.rsreu.astashkin0804.datalayer.CostByMonthSheetDao;
+import ru.rsreu.astashkin0804.datalayer.MonthlyRevenueSheetDao;
 import ru.rsreu.astashkin0804.datalayer.DaoFactory;
 import ru.rsreu.astashkin0804.datalayer.DetailDealDao;
-
+import ru.rsreu.astashkin0804.datalayer.configuration.DbConfiguration;
+import ru.rsreu.astashkin0804.datalayer.configuration.OracleDbConfiguration;
 
 public class OracleDbDaoFactory extends DaoFactory {
 	private static volatile OracleDbDaoFactory instance;
-	private Connection connection;
 
 	private OracleDbDaoFactory() {
 	}
@@ -33,11 +31,12 @@ public class OracleDbDaoFactory extends DaoFactory {
 
 	private void connected(DbConfiguration dbConfiguration) throws ClassNotFoundException, SQLException {
 		Locale.setDefault(Locale.ENGLISH);
-		this.connection = DriverManager.getConnection(dbConfiguration.getUrl(), dbConfiguration.getUser(),
-				dbConfiguration.getPassword());
-		
+		OracleDbConfiguration oracleDbConfiguration = (OracleDbConfiguration) dbConfiguration;
+		this.connection = DriverManager.getConnection(oracleDbConfiguration.getUrl(), oracleDbConfiguration.getUser(),
+				oracleDbConfiguration.getPassword());
+
 	}
-	
+
 	@Override
 	public BuyerDao getByerDao() {
 		return new OracleDbBuyerDao(this.connection);
@@ -49,7 +48,7 @@ public class OracleDbDaoFactory extends DaoFactory {
 	}
 
 	@Override
-	public CostByMonthSheetDao getCostByMonthSheetDao() {
-		return new OracleDbCostByMonthSheetDao(this.connection);
+	public MonthlyRevenueSheetDao getCostByMonthSheetDao() {
+		return new OracleDbMonthlyRevenueSheetDao(this.connection);
 	}
 }

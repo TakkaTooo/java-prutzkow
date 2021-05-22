@@ -12,7 +12,7 @@ public final class Buyer {
 		this.contactPerson = contactPerson;
 		this.address = address;
 	}
-	
+
 	public int getId() {
 		return this.id;
 	}
@@ -28,10 +28,4 @@ public final class Buyer {
 	public String getAddress() {
 		return this.address;
 	}
-	
-	@Override
-	public String toString() {
-		return String.format("id: %d, telephone: %s, person: %s, address: %s", this.id, this.telephoneNumber, this.contactPerson, this.address);
-	}
-
 }

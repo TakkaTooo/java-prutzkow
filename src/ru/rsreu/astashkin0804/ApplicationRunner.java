@@ -1,30 +1,57 @@
 package ru.rsreu.astashkin0804;
 
+import java.sql.SQLException;
 import java.text.ParseException;
+import java.util.List;
 
 import com.prutzkow.resourcer.Resourcer;
 
 import ru.rsreu.astashkin0804.datalayer.DaoFactory;
 import ru.rsreu.astashkin0804.datalayer.DbType;
 import ru.rsreu.astashkin0804.datalayer.DbTypeException;
+import ru.rsreu.astashkin0804.datalayer.configuration.DbConfiguration;
+import ru.rsreu.astashkin0804.datalayer.configuration.OracleDbConfiguration;
+import ru.rsreu.astashkin0804.datalayer.model.Buyer;
+import ru.rsreu.astashkin0804.datalayer.model.DetailDeal;
+import ru.rsreu.astashkin0804.datalayer.model.MonthlyRevenueSheet;
 
 public class ApplicationRunner {
+	private static DateStringConverter dateStringConverter = new DateStringConverter(
+			Resourcer.getString("demo.datePattern"));
+	private static int productIdForDemoQuery = 1;
+
+	private ApplicationRunner() {
+
+	}
 
 	public static void main(String[] args) throws ParseException {
-		StringBuilder sb = new StringBuilder();
-		DbConfiguration dbConfiguration = new DbConfiguration(Resourcer.getString("jdbc.driver.url"),
+		StringBuilder output = new StringBuilder();
+		DbConfiguration dbConfiguration = new OracleDbConfiguration(Resourcer.getString("jdbc.driver.url"),
 				Resourcer.getString("jdbc.driver.user"), Resourcer.getString("jdbc.driver.password"));
+		DaoFactory factory = null;
 		try {
-			DaoFactory factory = DaoFactory.getInstance(DbType.ORACLE, dbConfiguration);
-			sb.append(Resourcer.getString("jdbc.connection.fault"));
-			System.out.println(factory.getByerDao().getBuyersByProduct(1));
-			System.out.println(factory.getDetailDealDao().getDetailDealByDate(
-					DateStringConverter.convertStringToDate(Resourcer.getString("demo.query.lowerComissionDate")),
-					DateStringConverter.convertStringToDate(Resourcer.getString("demo.query.upperComissionDate"))));
-			System.out.println(factory.getCostByMonthSheetDao().getCostByMonthSheets());
+			factory = DaoFactory.getInstance(DbType.ORACLE, dbConfiguration);
+			output.append(Resourcer.getString("jdbc.connection.success")).append("\n");
+			List<Buyer> foundBuyers = factory.getByerDao().getBuyersByProduct(productIdForDemoQuery);
+			List<DetailDeal> foundDetailDeals = factory.getDetailDealDao().getDetailDealByDate(
+					dateStringConverter.convertStringToDate(Resourcer.getString("demo.query.lowerComissionDate")),
+					dateStringConverter.convertStringToDate(Resourcer.getString("demo.query.upperComissionDate")));
+			List<MonthlyRevenueSheet> calculatedMonthlyRevenueSheet = factory.getCostByMonthSheetDao()
+					.getCostByMonthSheets();
+			output.append(Resourcer.getString("demo.message.buyers"))
+					.append(new ReflectionTableGenerator<Buyer>(foundBuyers).generateTable())
+					.append(Resourcer.getString("demo.message.deals"))
+					.append(new ReflectionTableGenerator<DetailDeal>(foundDetailDeals).generateTable())
+					.append(Resourcer.getString("demo.message.mothlyrevenue"))
+					.append(new ReflectionTableGenerator<MonthlyRevenueSheet>(calculatedMonthlyRevenueSheet)
+							.generateTable());
 		} catch (DbTypeException e) {
-			e.printStackTrace();
+		} finally {
+			try {
+				factory.closeConnection();
+			} catch (SQLException | NullPointerException e) {
+			}
 		}
+		System.out.println(output);
 	}
 }
-	
