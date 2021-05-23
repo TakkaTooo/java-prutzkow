@@ -1,7 +1,6 @@
 package ru.rsreu.astashkin0804.datalayer.oracledb;
 
 import java.math.BigDecimal;
-import java.sql.Connection;
 import java.sql.SQLException;
 import java.util.ArrayList;
 import java.util.Iterator;
@@ -18,8 +17,8 @@ public class OracleDbBuyerDao implements BuyerDao {
 	private static String buyerByProductIdSql = Resourcer.getString("dao.buyer.sql");
 	private JdbcClient client;
 
-	public OracleDbBuyerDao(Connection connection) {
-		client = new JdbcClient(connection);
+	public OracleDbBuyerDao(JdbcClient client) {
+		this.client = client;
 	}
 
 	@Override
@@ -30,15 +29,17 @@ public class OracleDbBuyerDao implements BuyerDao {
 					((Integer) productId).toString());
 			Iterator<Map<String, Object>> iterator = queryResult.iterator();
 			while (iterator.hasNext()) {
-				Map<String, Object> currentRow = iterator.next();
-				result.add(new Buyer(((BigDecimal) currentRow.get(Resourcer.getString("dao.column.id"))).intValueExact(),
-						currentRow.get(Resourcer.getString("dao.buyer.column.telephone")).toString(),
-						currentRow.get(Resourcer.getString("dao.buyer.column.contactperson")).toString(),
-						currentRow.get(Resourcer.getString("dao.buyer.column.address")).toString()));
+				result.add(extractBuyer(iterator.next()));
 			}
 		} catch (SQLException e) {
-			System.out.println(e.getMessage());
 		}
 		return result;
+	}
+
+	private Buyer extractBuyer(Map<String, Object> row) {
+		return new Buyer(((BigDecimal) row.get(Resourcer.getString("dao.column.id"))).intValueExact(),
+				row.get(Resourcer.getString("dao.buyer.column.telephone")).toString(),
+				row.get(Resourcer.getString("dao.buyer.column.contactperson")).toString(),
+				row.get(Resourcer.getString("dao.buyer.column.address")).toString());
 	}
 }

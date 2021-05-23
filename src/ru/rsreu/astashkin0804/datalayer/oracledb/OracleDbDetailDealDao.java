@@ -1,7 +1,6 @@
 package ru.rsreu.astashkin0804.datalayer.oracledb;
 
 import java.math.BigDecimal;
-import java.sql.Connection;
 import java.util.Date;
 import java.util.Iterator;
 
@@ -22,8 +21,8 @@ public class OracleDbDetailDealDao implements DetailDealDao {
 	private JdbcClient client;
 	private DateStringConverter dateStringConverter = new DateStringConverter(Resourcer.getString("demo.datePattern"));
 
-	public OracleDbDetailDealDao(Connection connection) {
-		client = new JdbcClient(connection);
+	public OracleDbDetailDealDao(JdbcClient client) {
+		this.client = client;
 	}
 
 	@Override
@@ -35,21 +34,22 @@ public class OracleDbDetailDealDao implements DetailDealDao {
 					dateStringConverter.convertDateToString(upperComissionDate));
 			Iterator<Map<String, Object>> iterator = queryResult.iterator();
 			while (iterator.hasNext()) {
-				Map<String, Object> currentRow = iterator.next();
-				result.add(new DetailDeal(((BigDecimal) currentRow.get(Resourcer.getString("dao.column.id"))).intValueExact(),
-						(Date) currentRow.get(Resourcer.getString("dao.detaildeal.column.comissiondate")),
-						currentRow.get(Resourcer.getString("dao.detaildeal.column.name")).toString(),
-						((BigDecimal) currentRow.get(Resourcer.getString("dao.detaildeal.column.quantity"))).intValueExact(),
-						currentRow.get(Resourcer.getString("dao.buyer.column.telephone")).toString(),
-						currentRow.get(Resourcer.getString("dao.buyer.column.contactperson")).toString(),
-						getBooleanFromInt(
-								((BigDecimal) currentRow.get(Resourcer.getString("dao.dataildeal.column.iswholesale"))).intValueExact())));
+				result.add(extractDetailDeal(iterator.next()));
 			}
 		} catch (SQLException e) {
-			System.out.println(e.getMessage());
 		}
-
 		return result;
+	}
+
+	private DetailDeal extractDetailDeal(Map<String, Object> row) {
+		return new DetailDeal(((BigDecimal) row.get(Resourcer.getString("dao.column.id"))).intValueExact(),
+				(Date) row.get(Resourcer.getString("dao.detaildeal.column.comissiondate")),
+				row.get(Resourcer.getString("dao.detaildeal.column.name")).toString(),
+				((BigDecimal) row.get(Resourcer.getString("dao.detaildeal.column.quantity"))).intValueExact(),
+				row.get(Resourcer.getString("dao.buyer.column.telephone")).toString(),
+				row.get(Resourcer.getString("dao.buyer.column.contactperson")).toString(),
+				getBooleanFromInt(((BigDecimal) row.get(Resourcer.getString("dao.dataildeal.column.iswholesale")))
+						.intValueExact()));
 	}
 
 	private static boolean getBooleanFromInt(int obj) {

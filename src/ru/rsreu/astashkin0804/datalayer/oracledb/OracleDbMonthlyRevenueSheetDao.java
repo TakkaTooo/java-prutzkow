@@ -1,7 +1,6 @@
 package ru.rsreu.astashkin0804.datalayer.oracledb;
 
 import java.math.BigDecimal;
-import java.sql.Connection;
 import java.sql.SQLException;
 import java.util.ArrayList;
 import java.util.Iterator;
@@ -18,8 +17,8 @@ public class OracleDbMonthlyRevenueSheetDao implements MonthlyRevenueSheetDao {
 	private static String costByMonthSheetsSql = Resourcer.getString("dao.MonthleRevenue.sql");
 	private JdbcClient client;
 
-	public OracleDbMonthlyRevenueSheetDao(Connection connection) {
-		client = new JdbcClient(connection);
+	public OracleDbMonthlyRevenueSheetDao(JdbcClient client) {
+		this.client = client;
 	}
 
 	public List<MonthlyRevenueSheet> getCostByMonthSheets() {
@@ -28,14 +27,16 @@ public class OracleDbMonthlyRevenueSheetDao implements MonthlyRevenueSheetDao {
 			List<Map<String, Object>> queryResult = this.client.executeQuery(costByMonthSheetsSql);
 			Iterator<Map<String, Object>> iterator = queryResult.iterator();
 			while (iterator.hasNext()) {
-				Map<String, Object> currentRow = iterator.next();
-				result.add(new MonthlyRevenueSheet(
-						((BigDecimal) currentRow.get(Resourcer.getString("dao.MonthleRevenue.column.month"))).intValueExact(),
-						((BigDecimal) currentRow.get(Resourcer.getString("dao.MonthleRevenue.column.cost"))).floatValue()));
+				result.add(extractMonthlyRevenueSheet(iterator.next()));
 			}
 		} catch (SQLException e) {
-
 		}
 		return result;
+	}
+
+	private MonthlyRevenueSheet extractMonthlyRevenueSheet(Map<String, Object> row) {
+		return new MonthlyRevenueSheet(
+				((BigDecimal) row.get(Resourcer.getString("dao.MonthleRevenue.column.month"))).intValueExact(),
+				((BigDecimal) row.get(Resourcer.getString("dao.MonthleRevenue.column.cost"))).floatValue());
 	}
 }

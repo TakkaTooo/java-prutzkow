@@ -15,7 +15,7 @@ import com.prutzkow.resourcer.Resourcer;
 public class ReflectionTableGenerator<T> {
 
 	private List<T> body;
-	Map<String, Integer> fieldsValueMaxLengths = new HashMap<String, Integer>();
+	private Map<String, Integer> fieldsValueMaxLengths = new HashMap<String, Integer>();
 
 	public ReflectionTableGenerator(List<T> body) {
 		this.body = body;
@@ -30,10 +30,30 @@ public class ReflectionTableGenerator<T> {
 
 	private String getTableHeader() {
 		StringBuilder output = new StringBuilder();
+		setTableHeaderBorder(output);
+		output.append("\n");
 		for (Field field : getFields(body.get(0))) {
 			output.append(formTableString(field.getName(), field));
 		}
-		return output.append("|\n").toString();
+		output.append("|\n");
+		setTableHeaderBorder(output);
+		return output.append("\n").toString();
+	}
+
+	private void setTableHeaderBorder(StringBuilder output) {
+		int entrieLength = getStringEntrieLength();
+		for (int i = 0; i <= entrieLength; i++) {
+			output.append("-");
+		}
+	}
+
+	private int getStringEntrieLength() {
+		Iterator<Integer> iterator = fieldsValueMaxLengths.values().iterator();
+		int result = 0;
+		while (iterator.hasNext()) {
+			result += iterator.next();
+		}
+		return result + fieldsValueMaxLengths.values().size();
 	}
 
 	private String getTableBody() {

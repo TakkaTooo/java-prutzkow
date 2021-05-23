@@ -4,7 +4,7 @@ public class OracleDbConfiguration extends DbConfiguration {
 	private String url;
 	private String user;
 	private String password;
-	
+
 	public OracleDbConfiguration(String url, String user, String password) {
 		this.url = url;
 		this.user = user;

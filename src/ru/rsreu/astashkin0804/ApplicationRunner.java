@@ -28,11 +28,9 @@ public class ApplicationRunner {
 		StringBuilder output = new StringBuilder();
 		DbConfiguration dbConfiguration = new OracleDbConfiguration(Resourcer.getString("jdbc.driver.url"),
 				Resourcer.getString("jdbc.driver.user"), Resourcer.getString("jdbc.driver.password"));
-		DaoFactory factory = null;
-		try {
-			factory = DaoFactory.getInstance(DbType.ORACLE, dbConfiguration);
-			output.append(Resourcer.getString("jdbc.connection.success")).append("\n");
+		try (DaoFactory factory = DaoFactory.getInstance(DbType.ORACLE, dbConfiguration);) {
 			List<Buyer> foundBuyers = factory.getByerDao().getBuyersByProduct(productIdForDemoQuery);
+			output.append(Resourcer.getString("jdbc.connection.success")).append("\n");
 			List<DetailDeal> foundDetailDeals = factory.getDetailDealDao().getDetailDealByDate(
 					dateStringConverter.convertStringToDate(Resourcer.getString("demo.query.lowerComissionDate")),
 					dateStringConverter.convertStringToDate(Resourcer.getString("demo.query.upperComissionDate")));
@@ -45,12 +43,8 @@ public class ApplicationRunner {
 					.append(Resourcer.getString("demo.message.mothlyrevenue"))
 					.append(new ReflectionTableGenerator<MonthlyRevenueSheet>(calculatedMonthlyRevenueSheet)
 							.generateTable());
-		} catch (DbTypeException e) {
-		} finally {
-			try {
-				factory.closeConnection();
-			} catch (SQLException | NullPointerException e) {
-			}
+		} catch (SQLException | DbTypeException | NullPointerException e) {
+			output.append(Resourcer.getString("demo.message.connection.error"));
 		}
 		System.out.println(output);
 	}
