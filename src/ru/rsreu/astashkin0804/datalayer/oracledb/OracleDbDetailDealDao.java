@@ -17,7 +17,7 @@ import ru.rsreu.astashkin0804.datalayer.jdbc.client.JdbcClient;
 import ru.rsreu.astashkin0804.datalayer.model.DetailDeal;
 
 public class OracleDbDetailDealDao implements DetailDealDao {
-	private static String detailDealByDateSql = Resourcer.getString("dao.detaildeal.sql");
+	private static final String DETAIL_DEAL_BY_DATE_SQL = Resourcer.getString("dao.detaildeal.sql");
 	private JdbcClient client;
 	private DateStringConverter dateStringConverter = new DateStringConverter(Resourcer.getString("demo.datePattern"));
 
@@ -29,7 +29,7 @@ public class OracleDbDetailDealDao implements DetailDealDao {
 	public List<DetailDeal> getDetailDealByDate(Date lowerComissionDate, Date upperComissionDate) {
 		List<DetailDeal> result = new ArrayList<DetailDeal>();
 		try {
-			List<Map<String, Object>> queryResult = this.client.executeQuery(detailDealByDateSql,
+			List<Map<String, Object>> queryResult = this.client.executeQuery(DETAIL_DEAL_BY_DATE_SQL,
 					dateStringConverter.convertDateToString(lowerComissionDate),
 					dateStringConverter.convertDateToString(upperComissionDate));
 			Iterator<Map<String, Object>> iterator = queryResult.iterator();

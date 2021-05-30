@@ -16,9 +16,9 @@ import ru.rsreu.astashkin0804.datalayer.model.DetailDeal;
 import ru.rsreu.astashkin0804.datalayer.model.MonthlyRevenueSheet;
 
 public class ApplicationRunner {
-	private static DateStringConverter dateStringConverter = new DateStringConverter(
+	private static final DateStringConverter DATE_STRING_CONVERTER = new DateStringConverter(
 			Resourcer.getString("demo.datePattern"));
-	private static int productIdForDemoQuery = 1;
+	private static final int PRODUCT_ID_FOR_DEMO_QUERY = 1;
 
 	private ApplicationRunner() {
 
@@ -29,11 +29,11 @@ public class ApplicationRunner {
 		DbConfiguration dbConfiguration = new OracleDbConfiguration(Resourcer.getString("jdbc.driver.url"),
 				Resourcer.getString("jdbc.driver.user"), Resourcer.getString("jdbc.driver.password"));
 		try (DaoFactory factory = DaoFactory.getInstance(DbType.ORACLE, dbConfiguration);) {
-			List<Buyer> foundBuyers = factory.getByerDao().getBuyersByProduct(productIdForDemoQuery);
+			List<Buyer> foundBuyers = factory.getByerDao().getBuyersByProduct(PRODUCT_ID_FOR_DEMO_QUERY);
 			output.append(Resourcer.getString("jdbc.connection.success")).append("\n");
 			List<DetailDeal> foundDetailDeals = factory.getDetailDealDao().getDetailDealByDate(
-					dateStringConverter.convertStringToDate(Resourcer.getString("demo.query.lowerComissionDate")),
-					dateStringConverter.convertStringToDate(Resourcer.getString("demo.query.upperComissionDate")));
+					DATE_STRING_CONVERTER.convertStringToDate(Resourcer.getString("demo.query.lowerComissionDate")),
+					DATE_STRING_CONVERTER.convertStringToDate(Resourcer.getString("demo.query.upperComissionDate")));
 			List<MonthlyRevenueSheet> calculatedMonthlyRevenueSheet = factory.getCostByMonthSheetDao()
 					.getCostByMonthSheets();
 			output.append(Resourcer.getString("demo.message.buyers"))

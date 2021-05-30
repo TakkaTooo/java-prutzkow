@@ -14,7 +14,7 @@ import ru.rsreu.astashkin0804.datalayer.jdbc.client.JdbcClient;
 import ru.rsreu.astashkin0804.datalayer.model.Buyer;
 
 public class OracleDbBuyerDao implements BuyerDao {
-	private static String buyerByProductIdSql = Resourcer.getString("dao.buyer.sql");
+	private static final String BUYER_BY_PRODUCT_ID_SQL = Resourcer.getString("dao.buyer.sql");
 	private JdbcClient client;
 
 	public OracleDbBuyerDao(JdbcClient client) {
@@ -25,7 +25,7 @@ public class OracleDbBuyerDao implements BuyerDao {
 	public List<Buyer> getBuyersByProduct(int productId) {
 		List<Buyer> result = new ArrayList<Buyer>();
 		try {
-			List<Map<String, Object>> queryResult = this.client.executeQuery(buyerByProductIdSql,
+			List<Map<String, Object>> queryResult = this.client.executeQuery(BUYER_BY_PRODUCT_ID_SQL,
 					((Integer) productId).toString());
 			Iterator<Map<String, Object>> iterator = queryResult.iterator();
 			while (iterator.hasNext()) {

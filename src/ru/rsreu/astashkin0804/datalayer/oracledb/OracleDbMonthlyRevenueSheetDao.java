@@ -14,7 +14,7 @@ import ru.rsreu.astashkin0804.datalayer.jdbc.client.JdbcClient;
 import ru.rsreu.astashkin0804.datalayer.model.MonthlyRevenueSheet;
 
 public class OracleDbMonthlyRevenueSheetDao implements MonthlyRevenueSheetDao {
-	private static String costByMonthSheetsSql = Resourcer.getString("dao.MonthleRevenue.sql");
+	private static final String COST_BY_MONTH_SHHETS_SQL = Resourcer.getString("dao.MonthlyRevenue.sql");
 	private JdbcClient client;
 
 	public OracleDbMonthlyRevenueSheetDao(JdbcClient client) {
@@ -24,7 +24,7 @@ public class OracleDbMonthlyRevenueSheetDao implements MonthlyRevenueSheetDao {
 	public List<MonthlyRevenueSheet> getCostByMonthSheets() {
 		List<MonthlyRevenueSheet> result = new ArrayList<MonthlyRevenueSheet>();
 		try {
-			List<Map<String, Object>> queryResult = this.client.executeQuery(costByMonthSheetsSql);
+			List<Map<String, Object>> queryResult = this.client.executeQuery(COST_BY_MONTH_SHHETS_SQL);
 			Iterator<Map<String, Object>> iterator = queryResult.iterator();
 			while (iterator.hasNext()) {
 				result.add(extractMonthlyRevenueSheet(iterator.next()));
@@ -36,7 +36,7 @@ public class OracleDbMonthlyRevenueSheetDao implements MonthlyRevenueSheetDao {
 
 	private MonthlyRevenueSheet extractMonthlyRevenueSheet(Map<String, Object> row) {
 		return new MonthlyRevenueSheet(
-				((BigDecimal) row.get(Resourcer.getString("dao.MonthleRevenue.column.month"))).intValueExact(),
-				((BigDecimal) row.get(Resourcer.getString("dao.MonthleRevenue.column.cost"))).floatValue());
+				((BigDecimal) row.get(Resourcer.getString("dao.MonthlyRevenue.column.month"))).intValueExact(),
+				((BigDecimal) row.get(Resourcer.getString("dao.MonthlyRevenue.column.cost"))).floatValue());
 	}
 }
